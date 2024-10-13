@@ -1,6 +1,5 @@
 import { Client, Collection, CommandInteraction } from "npm:discord.js@14.16.3";
 import Command from "./Command.ts";
-import "jsr:@std/dotenv/load"
 
 export default abstract class DiscordBot {
     //public commands: Collection<string, Command>;
