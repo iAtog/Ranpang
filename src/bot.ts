@@ -1,5 +1,5 @@
 import Bot from "./class/DiscordBot.ts";
-import { Client, CommandInteraction, GatewayIntentBits } from "npm:discord.js@14.16.3";
+import { Client, CommandInteraction, GatewayIntentBits, AutocompleteInteraction } from "npm:discord.js@14.16.3";
 import { expandGlob } from "https://deno.land/std@0.224.0/fs/expand_glob.ts";
 import { REST } from 'npm:@discordjs/rest';
 import { Routes } from 'npm:discord-api-types/v9';
@@ -24,12 +24,14 @@ class Ranpang extends Bot {
     public override async loadCommands(): Promise<void> {
         console.log("Loading commands");
 
-        for await (const file of expandGlob("./src/commands/*")) {
-            const command = await import("./commands/" + file.name);
-
+        for await (const file of expandGlob("./src/commands/*/*.ts")) {
+            if(!file.isFile) continue;
+            const command = await import("file://" + file.path);
+            if(!command.default) continue;
             const CommandClass: Command = new command.default();
 
             this.client.commands.set(CommandClass.settings.name, CommandClass);
+            //console.log("Loaded command: " + CommandClass.settings.name);
         }
 
         this.registerCommands();
@@ -56,7 +58,7 @@ class Ranpang extends Bot {
         }
     }
 
-    public override async onInteraction(interaction: CommandInteraction): Promise<void> {
+    public override async onInteraction(interaction: CommandInteraction | AutocompleteInteraction | any): Promise<void> {
         if(!this.client.commands.has(interaction.commandName)) return;
 
         const command: Command = this.client.commands.get(interaction.commandName);
@@ -66,7 +68,7 @@ class Ranpang extends Bot {
             return;
         }
 
-        if(interaction.type == 'APPLICATION_COMMAND_AUTOCOMPLETE') {
+        if(interaction.isAutocomplete()) {
             await command.autocomplete(interaction);
             return;
         }
@@ -78,7 +80,7 @@ class Ranpang extends Bot {
             })
             return;
         }
-
+        
         command.run(this.client, interaction);
     }
 }

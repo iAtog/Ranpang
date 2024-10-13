@@ -1,4 +1,4 @@
-import { CommandInteraction, Client } from "npm:discord.js";
+import { CommandInteraction, Client, AutocompleteInteraction } from "npm:discord.js";
 
 abstract class Command {
     public settings: CommandSettings;
@@ -10,7 +10,7 @@ abstract class Command {
     public abstract run(client: Client, interaction: CommandInteraction): void;
 
     // deno-lint-ignore no-unused-vars
-    public autocomplete(interaction: CommandInteraction) {
+    public autocomplete(interaction: AutocompleteInteraction) {
         throw new Error("Method not implemented.");
     }
 
