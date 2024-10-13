@@ -1,5 +1,5 @@
-import {Command, ChoiceType} from "../class/Command.ts";
-import { Message, Client, CommandInteraction } from "npm:discord.js";
+import {Command, ChoiceType} from "../../class/Command.ts";
+import { Client, CommandInteraction } from "npm:discord.js";
 import { Embed } from "npm:@notenoughupdates/discord.js-builders";
 
 class Help extends Command {
