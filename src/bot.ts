@@ -75,12 +75,12 @@ class Ranpang extends Bot {
 
         if(command.settings.restricted && interaction.user.id !== "660479309416235029") {
             interaction.reply({
-                content: "Este comando está deshabilitado temporalmente o restringido",
+                content: "Este comando está deshabilitado.",
                 ephemeral: true
             })
             return;
         }
-        
+
         command.run(this.client, interaction);
     }
 }

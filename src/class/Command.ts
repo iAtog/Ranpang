@@ -22,6 +22,33 @@ abstract class Command {
         }
     }
 
+    public mayus(str: string) {
+        let newStr = "";
+
+        newStr += str.charAt(0).toUpperCase();
+        newStr += str.slice(1);
+
+        return newStr;
+    }
+
+    public async heroAutocomplete(interaction: any): Promise<void> {
+        const focused = interaction.options.getFocused();
+        const response = await fetch("https://www.gtales.top/api/heroes");
+        const data: Heroe[] = await response.json();
+        
+        const filtered = data.filter(hero => hero.name.toLowerCase().startsWith(focused.toLowerCase()));
+        let choices = filtered.map(choice => ({ name: this.mayus(choice.name), value: choice.key }));
+
+        if(choices.length > 25) {
+            choices = choices.slice(0, 25);
+        }
+
+        interaction.respond(
+            choices,
+        ).catch(console.error);
+    }
+
+
 }
 
 enum ChoiceType {
@@ -38,6 +65,11 @@ enum ChoiceType {
     ATTACHMENT = 11
 }
 
+interface Heroe {
+    name: string;
+    key: string;
+}
+
 interface CommandSettings {
     name: string;
     description: string;
@@ -51,6 +83,7 @@ interface CommandChoices {
     description: string;
     required?: boolean;
     autocomplete?: boolean;
+    options?: CommandChoices[];
 }
 
 interface ParsedCommand {

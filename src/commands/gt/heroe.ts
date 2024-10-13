@@ -33,7 +33,7 @@ class CMD extends Command {
         }
 
         const embed = new Embed()
-            .setTitle(data.name)
+            .setTitle(this.mayus(data.name))
             .setDescription(data.party)
             .setThumbnail("https://www.gtales.top/_next/image?url=%2Fassets%2Fheroes%2F" + data.atr + ".webp&w=256&q=75")
             .addFields(
@@ -46,35 +46,8 @@ class CMD extends Command {
     }
 
     public override async autocomplete(interaction: AutocompleteInteraction): Promise<void> {
-        const focused = interaction.options.getFocused();
-        const response = await fetch("https://www.gtales.top/api/heroes");
-        const data: Heroe[] = await response.json();
-        
-        const filtered = data.filter(hero => hero.name.toLowerCase().startsWith(focused.toLowerCase()));
-        let choices = filtered.map(choice => ({ name: choice.name, value: choice.key }));
-
-        if(choices.length > 25) {
-            choices  = choices.slice(0, 25);
-        }
-
-        interaction.respond(
-            choices,
-        ).catch(console.error);
+        await this.heroAutocomplete(interaction);
     }
-
-    public mayus(str: string) {
-        let newStr = "";
-
-        newStr += str.charAt(0).toUpperCase();
-        newStr += str.slice(1);
-
-        return newStr;
-    }
-}
-
-interface Heroe {
-    name: string;
-    key: string;
 }
 
 export default CMD;
