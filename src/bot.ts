@@ -18,7 +18,7 @@ class Ranpang extends Bot {
     }
 
     public override onLoad(): void {
-        console.log("Bot loaded as " + this.client.user?.username);
+        console.log("Bot loaded as " + this.client.user?.username + "#" + this.client.user?.discriminator);
     }
 
     public override async loadCommands(): Promise<void> {
@@ -30,8 +30,6 @@ class Ranpang extends Bot {
             const CommandClass: Command = new command.default();
 
             this.client.commands.set(CommandClass.settings.name, CommandClass);
-            //this.cmds.push(CommandClass.parseOptions().toJSON())
-            console.log(`Loaded command ${CommandClass.settings.name}`);
         }
 
         this.registerCommands();
