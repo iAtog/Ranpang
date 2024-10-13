@@ -4,7 +4,6 @@ import { expandGlob } from "https://deno.land/std@0.224.0/fs/expand_glob.ts";
 import { REST } from 'npm:@discordjs/rest';
 import { Routes } from 'npm:discord-api-types/v9';
 import {Command} from "./class/Command.ts";
-import "jsr:@std/dotenv/load"
 
 class Ranpang extends Bot {
     public cmds: string[] = [];
