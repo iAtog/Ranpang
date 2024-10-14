@@ -1,8 +1,8 @@
+// deno-lint-ignore-file no-explicit-any
 import { Command, ChoiceType } from "../../class/Command.ts";
 import { Client, CommandInteraction, AutocompleteInteraction } from "npm:discord.js";
 import { Embed } from "npm:@notenoughupdates/discord.js-builders";
 import { Heroe } from "../../lib/team/mod.ts";
-
 
 class CMD extends Command {
     private heroColor: number[];
@@ -60,22 +60,18 @@ class CMD extends Command {
         
         embed.setColor(data.rarity === "ascend" ? 0x25d60d : this.heroColor[parseInt(data.rarity) - 1]);
 
-        if (data.na !== null) {
-            embed.addFields({ name: "Normal Attack", value: data.na.title, inline: true });
-        }
-        if (data.ability !== null) {
-            embed.addFields({ name: "Ability", value: data.ability.title, inline: true })
-        }
-
-        if (data.chain !== null) {
-            embed.addFields({ name: "Chain", value: data.chain.title, inline: true })
-        }
-
-        if (data.weapon !== null) {
-            embed.addFields({ name: "Weapon", value: data.weapon.name, inline: true })
-        }
+        this.nonNull(data.na, () => embed.addFields({ name: "Normal Attack", value: data.na.title, inline: true }))
+        this.nonNull(data.ability, () => embed.addFields({ name: "Ability", value: data.ability.title, inline: true }))
+        this.nonNull(data.chain, () => embed.addFields({ name: "Chain", value: data.chain.title, inline: true }))
+        this.nonNull(data.weapon, () => embed.addFields({ name: "Weapon", value: data.weapon.name, inline: true }))
 
         interaction.reply({ embeds: [embed] });
+    }
+
+    
+    // deno-lint-ignore ban-types
+    public nonNull(value: any, thing: Function): void {
+        if(value !== null) thing()
     }
 
     public override async autocomplete(interaction: AutocompleteInteraction): Promise<void> {
