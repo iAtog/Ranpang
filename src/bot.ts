@@ -40,10 +40,10 @@ class Ranpang extends Bot {
     public override async registerCommands(): Promise<void> {
         const rest = new REST({ version: '9' }).setToken(Deno.env.get("DISCORD_TOKEN") ?? "");
         const cmds: object[] = [];
-        this.client.commands.forEach((exec: Command, command: string) => {
+        // deno-lint-ignore no-explicit-any
+        this.client.commands.forEach((exec: any, command: any) => {
             console.log("Registering (/) command: " + command);
             cmds.push(exec.parse());
-            //console.log(exec.parse())
         });
 
         try {
@@ -59,11 +59,12 @@ class Ranpang extends Bot {
     }
 
     public override async onInteraction(interaction: CommandInteraction | AutocompleteInteraction | any): Promise<void> {
-        if(!this.client.commands.has(interaction.commandName)) return;
+        const commands = this.client.commands as Map<string, Command>
+        if(!commands.has(interaction.commandName)) return;
 
-        const command: Command = this.client.commands.get(interaction.commandName);
+        const command: Command | undefined = commands.get(interaction.commandName);
 
-        if(command === null) {
+        if(command === null || command === undefined) {
             console.log('[SEVERE] The command ' + interaction.commandName + ' was registered - however, no handler for it was found');
             return;
         }
