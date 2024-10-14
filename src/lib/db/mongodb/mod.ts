@@ -10,7 +10,7 @@ class MongoDB extends Database {
         return Promise.resolve(undefined!);
     }
 
-    public save(key: string, value: Team): Promise<Team> {
+    public set(key: string, value: Team): Promise<boolean> {
         return Promise.resolve(undefined!);
     }
 
@@ -20,6 +20,10 @@ class MongoDB extends Database {
 
     public connect(): Promise<void> {
         return Promise.resolve();
+    }
+
+    public close(): Promise<boolean> {
+        return Promise.resolve(true);
     }
 }
 
