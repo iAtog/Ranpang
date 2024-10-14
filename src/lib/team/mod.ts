@@ -1,7 +1,12 @@
 import { Buffer } from "node:buffer";
-
+import { Database } from "../db/mod.ts";
 class TeamsHandler {
     private teams: Team[] = [];
+    private database: Database;
+
+    constructor(database: Database) {
+        this.database = database;
+    }
 
     public getTeams(): Team[] {
         return this.teams;
@@ -17,6 +22,10 @@ class TeamsHandler {
 
     public addTeam(team: Team) {
         this.teams.push(team);
+    }
+
+    public removeTeam(team: Team) {
+        this.teams = this.teams.filter(t => t.id !== team.id);
     }
 
     public getTeam(members: TeamMember[]): Team {
