@@ -9,7 +9,7 @@ class TeamsHandler {
     }
 
     public getTeams(): Team[] {
-        return this.teams;
+        return [...this.teams];
     }
 
     public saveTeams(): void {

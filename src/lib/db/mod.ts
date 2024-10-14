@@ -18,7 +18,6 @@ class MongoDB extends Database {
 
     public save(key: string, value: Team): Promise<Team> {
         return Promise.resolve(undefined!);
-        //return this.teams.set(key, value);
     }
 
     public getAll(): Promise<Team[]> {
@@ -37,7 +36,6 @@ class LocalDatabase extends Database {
 
     public save(key: string, value: Team): Promise<Team> {
         return Promise.resolve(undefined!);
-        //return this.teams.set(key, value);
     }
 
     public getAll(): Promise<Team[]> {
