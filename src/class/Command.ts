@@ -1,3 +1,4 @@
+// deno-lint-ignore-file
 import { CommandInteraction, Client, AutocompleteInteraction } from "npm:discord.js";
 
 abstract class Command {
@@ -50,6 +51,10 @@ abstract class Command {
         interaction.respond(
             choices,
         ).catch(console.error);
+    }
+
+    public nonNull(value: any, thing: Function): void {
+        if(value !== null) thing()
     }
 
 

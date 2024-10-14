@@ -1,3 +1,4 @@
+// deno-lint-ignore-file no-unused-vars
 import { Team } from "../team/mod.ts";
 
 abstract class Database {

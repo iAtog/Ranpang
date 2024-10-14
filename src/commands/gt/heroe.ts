@@ -68,12 +68,6 @@ class CMD extends Command {
         interaction.reply({ embeds: [embed] });
     }
 
-    
-    // deno-lint-ignore ban-types
-    public nonNull(value: any, thing: Function): void {
-        if(value !== null) thing()
-    }
-
     public override async autocomplete(interaction: AutocompleteInteraction): Promise<void> {
         await this.heroAutocomplete(interaction);
     }
