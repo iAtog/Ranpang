@@ -1,4 +1,3 @@
-// deno-lint-ignore-file no-explicit-any
 import { Command, ChoiceType } from "../../class/Command.ts";
 import { Client, CommandInteraction, AutocompleteInteraction } from "npm:discord.js";
 import { Embed } from "npm:@notenoughupdates/discord.js-builders";

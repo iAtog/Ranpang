@@ -1,4 +1,3 @@
-// deno-lint-ignore-file no-unused-vars
 import { Team } from "../team/mod.ts";
 
 abstract class Database {
@@ -9,52 +8,6 @@ abstract class Database {
     public abstract connect(): Promise<void>;
 }
 
-class MongoDB extends Database {
-    public get(key: string): Promise<Team> {
-        return Promise.resolve(undefined!);
-    }
-
-    public remove(key: string): Promise<Team> {
-        return Promise.resolve(undefined!);
-    }
-
-    public save(key: string, value: Team): Promise<Team> {
-        return Promise.resolve(undefined!);
-    }
-
-    public getAll(): Promise<Team[]> {
-        return Promise.resolve([]);
-    }
-
-    public connect(): Promise<void> {
-        return Promise.resolve();
-    }
-}
-
-class LocalDatabase extends Database {
-    public get(key: string): Promise<Team> {
-        return Promise.resolve(undefined!);
-    }
-
-    public remove(key: string): Promise<Team> {
-        return Promise.resolve(undefined!);
-    }
-
-    public save(key: string, value: Team): Promise<Team> {
-        return Promise.resolve(undefined!);
-    }
-
-    public getAll(): Promise<Team[]> {
-        return Promise.resolve([]);
-    }
-
-    public connect(): Promise<void> {
-        return Promise.resolve();
-    }
-}
-
 export {
-    Database,
-    MongoDB,
-    LocalDatabase
+    Database
 }
