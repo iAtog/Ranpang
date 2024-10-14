@@ -31,12 +31,16 @@ abstract class Command {
         return newStr;
     }
 
-    public async heroAutocomplete(interaction: any): Promise<void> {
+    public async heroAutocomplete(interaction: any, blacklist = []): Promise<void> {
         const focused = interaction.options.getFocused();
         const response = await fetch("https://www.gtales.top/api/heroes");
         const data: Heroe[] = await response.json();
-        
-        const filtered = data.filter(hero => hero.name.toLowerCase().startsWith(focused.toLowerCase()));
+        const blacklistedKeys: string[] = [...blacklist];
+        // heroes 1 estrella
+        blacklistedKeys.push("linda", "bob", "hyper", "maria", "lisa", "leah", "jay", "dragon", "blade", "mina", "hoshida", "peggy", "ailie", "oralie", "kang", "agatha", "davinci", "kate", "zoe", "rio", "nyan", "martyJunior");
+
+        const filtered = data.filter(hero => hero.name.toLowerCase().startsWith(focused.toLowerCase()) && !blacklistedKeys.includes(hero.key));
+        //const filtered = data.filter(hero => hero.name.toLowerCase().startsWith(focused.toLowerCase()));
         let choices = filtered.map(choice => ({ name: this.mayus(choice.name), value: choice.key }));
 
         if(choices.length > 25) {

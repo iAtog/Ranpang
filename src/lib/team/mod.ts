@@ -1,5 +1,6 @@
 import { Buffer } from "node:buffer";
 import { Database } from "../db/mod.ts";
+
 class TeamsHandler {
     private teams: Team[] = [];
     private database: Database;
