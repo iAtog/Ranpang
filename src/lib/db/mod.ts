@@ -5,6 +5,7 @@ abstract class Database {
     public abstract remove(key: string): Promise<Team>;
     public abstract save(key: string, value: Team): Promise<Team>;
     public abstract getAll(): Promise<Team[]>;
+    public abstract connect(): Promise<void>;
 }
 
 class MongoDB extends Database {
@@ -23,6 +24,10 @@ class MongoDB extends Database {
     public getAll(): Promise<Team[]> {
         return Promise.resolve([]);
     }
+
+    public connect(): Promise<void> {
+        return Promise.resolve();
+    }
 }
 
 class LocalDatabase extends Database {
@@ -40,6 +45,10 @@ class LocalDatabase extends Database {
 
     public getAll(): Promise<Team[]> {
         return Promise.resolve([]);
+    }
+
+    public connect(): Promise<void> {
+        return Promise.resolve();
     }
 }
 
