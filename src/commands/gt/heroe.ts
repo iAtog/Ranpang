@@ -56,7 +56,7 @@ class CMD extends Command {
                 { name: "Available", value: data.available ? "Yes" : "No", inline: true }
             )
             //.setTimestamp(Date.now())
-            .setFooter({ text: "Powered by gtales.top (only english) | " + data.stats.hp + " HP | " + data.stats.atk + " ATK | " + data.stats.def + " DEF" });
+            .setFooter({ text: "Powered by gtales.top (only english) | " + data.stats.hp + " HP - " + data.stats.atk + " ATK - " + data.stats.def + " DEF" });
         
         embed.setColor(data.rarity === "ascend" ? 0x25d60d : this.heroColor[parseInt(data.rarity) - 1]);
 
