@@ -1,4 +1,3 @@
-import { Buffer } from "node:buffer";
 import { Database } from "../db/mod.ts";
 
 class TeamsHandler {
@@ -55,7 +54,7 @@ class TeamsHandler {
             gamemode: TeamGameMode[gamemode],
             description: description,
             members: members,
-            screenshots: new Map()
+            screenshots: []
         };
 
         return team;
@@ -104,12 +103,12 @@ interface Team {
     gamemode: TeamGameMode;
     description: string;
     members: TeamMember[];
-    screenshots: Map<string, Screenshot>;
+    screenshots: Screenshot[];
 }
 
 interface Screenshot {
     name: string;
-    buffer: Buffer;
+    url: string;
 }
 
 interface TeamMember {
@@ -197,5 +196,6 @@ export {
 export type {
     Team,
     TeamMember,
-    Heroe
+    Heroe,
+    Screenshot
 }
