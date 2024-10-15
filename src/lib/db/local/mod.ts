@@ -41,7 +41,7 @@ class LocalDatabase extends Database {
      */
     public set(key: string, value: Team): Promise<boolean> {
         if(this.json[key]) {
-            Promise.reject(new Error("Team already exists"));
+            Promise.resolve(false);
         }
         this.json[key] = value;
         return Promise.resolve(true);
