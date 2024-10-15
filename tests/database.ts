@@ -30,6 +30,8 @@ Deno.test("add team", () => {
             {key: "sia", name: "Sia"},
             {key: "sia", name: "Sia"}
         ],
+        author: "Richard",
+        createdAt: new Date(),
         screenshots
     });
 

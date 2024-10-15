@@ -48,14 +48,16 @@ class TeamsHandler {
         return undefined!; 
     }
 
-    public createTeam(gamemode: keyof typeof TeamGameMode, description: string, members: TeamMember[]): Team {
+    public createTeam(gamemode: keyof typeof TeamGameMode, author: string, description: string, members: TeamMember[]): Team {
+        const id = createTeamId();
         const team: Team = {
-            id: crypto.randomUUID().toString(),
+            id,
             gamemode: TeamGameMode[gamemode],
             description: description,
             members: members,
             screenshots: [],
-            createdAt: new Date()
+            createdAt: new Date(),
+            author
         };
 
         return team;
@@ -114,6 +116,7 @@ interface Team {
     members: TeamMember[];
     screenshots: Screenshot[];
     createdAt: Date;
+    author: string;
 }
 
 interface Screenshot {
