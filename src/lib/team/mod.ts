@@ -54,7 +54,8 @@ class TeamsHandler {
             gamemode: TeamGameMode[gamemode],
             description: description,
             members: members,
-            screenshots: []
+            screenshots: [],
+            createdAt: new Date()
         };
 
         return team;
@@ -112,6 +113,7 @@ interface Team {
     description: string;
     members: TeamMember[];
     screenshots: Screenshot[];
+    createdAt: Date;
 }
 
 interface Screenshot {
