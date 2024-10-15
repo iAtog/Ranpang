@@ -36,9 +36,24 @@ class EZ_Host {
         }
     }
 
-    public async createUrl(url: string): Promise<void> {
-        const teamId = createTeamId();
-        Promise.resolve();
+    public async createUrl(url: string): Promise<string> {
+        const sessionId = createTeamId();
+        const imageExtension = "png";
+        const image = await this.download(url, imageExtension!, sessionId);
+        if(!image) {
+            return Promise.reject(new Error("Error downloading image"));
+        }
+
+        const uploaded = await this.upload(image);
+
+        if(uploaded && uploaded.success) {
+            this.delete(image);
+            return Promise.resolve(uploaded.imageUrl);
+        }
+
+        this.delete(image);
+
+        return Promise.reject(new Error("Error uploading image", {cause: uploaded}));
     }
 
     public async download(url: string, extension: string, id: string = createTeamId()): Promise<string> {
@@ -63,12 +78,13 @@ class EZ_Host {
         });
     }
 
-    public async delete(path: string): Promise<void> {
+    public delete(path: string): Promise<void> {
         return new Promise((resolve, reject) => {
             if(!fs.existsSync(path)) {
-                reject(new Error("File not found"));
+                reject("Not found");
                 return;
             }
+            
             fs.unlinkSync(path);
             resolve();
         });
