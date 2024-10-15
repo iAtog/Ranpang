@@ -96,7 +96,15 @@ class TeamsHandler {
     }
 }
 
+function createTeamId(): string {
+    const abc = "ABCDEFabcdef0123456789";
+    let id = "";
+    for (let i = 0; i < 10; i++) {
+        id += abc[Math.floor(Math.random() * abc.length)];
+    }
 
+    return id;
+}
 
 interface Team {
     id: string;
@@ -190,7 +198,8 @@ interface WeaponSkill {
 
 export {
     TeamsHandler,
-    TeamGameMode
+    TeamGameMode,
+    createTeamId
 }
 
 export type {
