@@ -14,7 +14,7 @@ let imagePath: string;
 
 Deno.test("downloading image", async() => {
     console.log(`[${sessionId}] Downloading image `);
-    const imageExtension = testingImage.split(".").pop();
+    const imageExtension = "png"//testingImage.split(".").pop();
     const image = await ezHost.download(testingImage, imageExtension!, sessionId);
     console.log(`[${sessionId}] Image downloaded in ${image}`);
     imagePath = image;
