@@ -7,7 +7,8 @@
   },
   "test": {
     "include": [
-      "tests/database.ts"
+      "tests/database.ts",
+      "tests/ez_host.ts"
     ]
   }
 }
