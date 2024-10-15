@@ -7,6 +7,7 @@ abstract class Database {
     public abstract getAll(): Promise<Team[]>;
     public abstract connect(): Promise<void>;
     public abstract close(): Promise<boolean>;
+    public abstract save(): Promise<void>;
 }
 
 export {

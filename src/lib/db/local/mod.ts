@@ -12,7 +12,7 @@ class LocalDatabase extends Database {
         this.path = path;
     }
 
-    public get(key: string): Promise<Team> {
+    public override get(key: string): Promise<Team> {
         const team = this.json[key];
         if(team) {
             return Promise.resolve(team);
@@ -21,7 +21,7 @@ class LocalDatabase extends Database {
         return Promise.resolve(undefined!);
     }
 
-    public remove(key: string): Promise<void> {
+    public override remove(key: string): Promise<void> {
         const team = this.json[key];
         if(team !== null) {
             const t = this.json;
@@ -33,13 +33,7 @@ class LocalDatabase extends Database {
         return Promise.resolve(undefined!);
     }
 
-    /**
-     * 
-     * @param key KEY = ID
-     * @param value 
-     * @returns 
-     */
-    public set(key: string, value: Team): Promise<boolean> {
+    public override set(key: string, value: Team): Promise<boolean> {
         if(this.json[key]) {
             Promise.resolve(false);
         }
@@ -47,11 +41,11 @@ class LocalDatabase extends Database {
         return Promise.resolve(true);
     }
 
-    public getAll(): Promise<Team[]> {
+    public override getAll(): Promise<Team[]> {
         return Promise.resolve(Object.values(this.json));
     }
 
-    public async connect(): Promise<void> {
+    public override async connect(): Promise<void> {
         if(!(await Deno.stat(this.path).then(stat => stat.isFile))) {
             await Deno.writeTextFile(this.path, "{}");
         }
@@ -60,9 +54,14 @@ class LocalDatabase extends Database {
         return Promise.resolve();
     }
 
-    public async close(): Promise<boolean> {
-        await Deno.writeTextFile(this.path, JSON.stringify(this.json));
+    public override async close(): Promise<boolean> {
+        await this.save();
         return Promise.resolve(true);
+    }
+
+    public override async save(): Promise<void> {
+        await Deno.writeTextFile(this.path, JSON.stringify(this.json));
+        return Promise.resolve();
     }
 }
 
