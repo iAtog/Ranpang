@@ -8,6 +8,7 @@ abstract class Database {
     public abstract connect(): Promise<void>;
     public abstract close(): Promise<boolean>;
     public abstract save(): Promise<void>;
+    public abstract isConnected(): boolean;
 }
 
 export {

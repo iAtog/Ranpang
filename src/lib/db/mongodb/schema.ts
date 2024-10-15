@@ -1,4 +1,4 @@
-import { model, Schema } from "npm:mongoose";
+import { Schema, model } from "npm:mongoose@^6.7";
 
 const teamSchema = new Schema({
     id: String,

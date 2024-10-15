@@ -63,6 +63,10 @@ class LocalDatabase extends Database {
         await Deno.writeTextFile(this.path, JSON.stringify(this.json));
         return Promise.resolve();
     }
+
+    public override isConnected(): boolean {
+        return this.json !== undefined;
+    }
 }
 
 export default LocalDatabase;

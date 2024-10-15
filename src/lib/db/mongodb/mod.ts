@@ -1,5 +1,5 @@
-import mongoose from "npm:mongoose";
-import type { Connection, Mongoose } from "npm:mongoose";
+// deno-lint-ignore-file no-explicit-any
+import * as mongoose from "npm:mongoose@^6.7";
 import schema from './schema.ts';
 
 import { Database } from "../mod.ts";
@@ -7,7 +7,7 @@ import { Team } from "../../team/mod.ts";
 
 class MongoDB extends Database {
 
-    public connection: Mongoose | undefined;
+    public connection: mongoose.Connection | undefined;
     
     constructor() {
         super();
@@ -16,9 +16,9 @@ class MongoDB extends Database {
     public get(key: string): Promise<Team> {
         return new Promise((resolve, reject) => {
             try {
-                schema.findOne({id: key }).then(data => {
-                    resolve(data?.toJSON() as Team);
-                }).catch((e) => {
+                schema.findOne({id: key }).then((data: any) => {
+                    resolve(data as Team);
+                }).catch((e: any) => {
                     resolve(undefined!);
                 });
             } catch (error) {
@@ -32,8 +32,8 @@ class MongoDB extends Database {
             try {
                 schema.deleteOne({id: key }).then(() => {
                     resolve();
-                }).catch((e) => {
-                    resolve();
+                }).catch((e: any) => {
+                    reject(e);
                 });
             } catch (error) {
                 reject(error);
@@ -53,7 +53,7 @@ class MongoDB extends Database {
                 author: value.author
             }).save().then(() => {
                 resolve(true);
-            }).catch((e) => {
+            }).catch((e: any) => {
                 console.log(e);
                 resolve(false);
             })
@@ -62,9 +62,9 @@ class MongoDB extends Database {
 
     public getAll(): Promise<Team[]> {
         return new Promise((resolve, _reject) => {
-            schema.find({}).then(data => {
-                resolve(data.map(d => d.toJSON() as Team));
-            }).catch(e => {
+            schema.find({}).then((data: any[]) => {
+                resolve(data.map((d: any) => d as Team));
+            }).catch((e: any) => {
                 console.log(e);
                 resolve([]);
             });
@@ -72,14 +72,16 @@ class MongoDB extends Database {
     }
 
     public async connect(): Promise<void> {
-        this.connection = await mongoose.connect(Deno.env.get("MONGODB_URI")!);
+        //console.log(Deno.env.get("MONGODB_URI")!);
+        const connect = await mongoose.connect(Deno.env.get("MONGODB_URI")!)
+        this.connection = connect.connection;
         console.log("Connected to MongoDB!");
         return Promise.resolve();
     }
 
     public close(): Promise<boolean> {
         return new Promise((resolve, _reject) => {
-            mongoose.connection.close().then(() => {
+            this.connection?.close().then(() => {
                 resolve(true);
                 console.log("Closed MongoDB!");
             }).catch(e => {
@@ -91,6 +93,10 @@ class MongoDB extends Database {
 
     public override save(): Promise<void> {
         return Promise.resolve();
+    }
+
+    public override isConnected(): boolean {
+        return mongoose.connection.readyState === 1;
     }
 }
 
