@@ -28,6 +28,10 @@ class TeamsHandler {
         this.teams = this.teams.filter(t => t.id !== team.id);
     }
 
+    public getCounter(members: TeamMember[]): Team {
+        
+    }
+/*
     public getTeam(members: TeamMember[]): Team {
         for (let i = 0; i < this.teams.length; i++) {
             const team = this.teams[i];
@@ -46,9 +50,9 @@ class TeamsHandler {
         }
         //this.createTeam("COLOSSEUM", "Test", [{key: "test", name: "Test"}]);
         return undefined!; 
-    }
+    }*/
 
-    public createTeam(gamemode: keyof typeof TeamGameMode, author: string, description: string, members: TeamMember[]): Team {
+    public createTeam(gamemode: keyof typeof TeamGameMode, description: string, members: TeamMember[]): Team {
         const id = createTeamId();
         const team: Team = {
             id,
@@ -56,8 +60,7 @@ class TeamsHandler {
             description: description,
             members: members,
             screenshots: [],
-            createdAt: new Date(),
-            author
+            createdAt: new Date()
         };
 
         return team;
@@ -116,11 +119,10 @@ interface Team {
     members: TeamMember[];
     screenshots: Screenshot[];
     createdAt: Date;
-    author: string;
 }
 
 interface Screenshot {
-    name: string;
+    author: string;
     url: string;
 }
 
@@ -134,6 +136,8 @@ enum TeamGameMode {
     RAID = "Raid",
     TETIS = "Tetis"
 }
+
+// HERO INFO:
 
 interface Heroe {
     key: string;
