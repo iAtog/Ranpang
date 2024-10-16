@@ -30,9 +30,8 @@ Deno.test("add team", async() => {
             {key: "sia", name: "Sia"},
             {key: "sia", name: "Sia"}
         ],
-        author: "Richard",
         createdAt: new Date(),
-        screenshots: [{url: "test", name: "test"}]
+        screenshots: [{url: "test", author: "Richard"}]
     });
 
     expect(database.get("etest1")).toBeDefined();
