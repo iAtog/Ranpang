@@ -9,8 +9,27 @@ abstract class Database {
     public abstract close(): Promise<boolean>;
     public abstract save(): Promise<void>;
     public abstract isConnected(): boolean;
+    public abstract databaseName(): string;
+}
+
+enum DatabaseName {
+    MONGODB = "mongodb",
+    LOCAL = "local"
+}
+
+async function loadDatabase(name: DatabaseName): Promise<Database> {
+    switch(name) {
+        case DatabaseName.MONGODB:
+            return new (await import("./mongodb/mod.ts")).default();
+        case DatabaseName.LOCAL:
+            return new (await import("./local/mod.ts")).default();
+        default:
+            return new (await import("./local/mod.ts")).default();
+    }
 }
 
 export {
-    Database
+    Database,
+    DatabaseName,
+    loadDatabase
 }

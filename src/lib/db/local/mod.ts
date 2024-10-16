@@ -67,6 +67,10 @@ class LocalDatabase extends Database {
     public override isConnected(): boolean {
         return this.json !== undefined;
     }
+
+    public override databaseName(): string {
+        return "local";
+    }
 }
 
 export default LocalDatabase;

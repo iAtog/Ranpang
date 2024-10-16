@@ -1,13 +1,11 @@
 // deno-lint-ignore-file no-explicit-any
-import * as mongoose from "npm:mongoose@^6.7";
+import mongoose from "npm:mongoose";
 import schema from './schema.ts';
 
 import { Database } from "../mod.ts";
 import { Team } from "../../team/mod.ts";
 
 class MongoDB extends Database {
-
-    public connection: mongoose.Connection | undefined;
     
     constructor() {
         super();
@@ -18,7 +16,7 @@ class MongoDB extends Database {
             try {
                 schema.findOne({id: key }).then((data: any) => {
                     resolve(data as Team);
-                }).catch((e: any) => {
+                }).catch((_e: any) => {
                     resolve(undefined!);
                 });
             } catch (error) {
@@ -73,18 +71,18 @@ class MongoDB extends Database {
 
     public async connect(): Promise<void> {
         //console.log(Deno.env.get("MONGODB_URI")!);
-        const connect = await mongoose.connect(Deno.env.get("MONGODB_URI")!)
-        this.connection = connect.connection;
+        await mongoose.connect(Deno.env.get("MONGODB_URI")!)
+        //this.connection = connect.connection;
         console.log("Connected to MongoDB!");
         return Promise.resolve();
     }
 
     public close(): Promise<boolean> {
         return new Promise((resolve, _reject) => {
-            this.connection?.close().then(() => {
+            mongoose.connection.close().then(() => {
                 resolve(true);
                 console.log("Closed MongoDB!");
-            }).catch(e => {
+            }).catch((e:any) => {
                 console.log(e);
                 resolve(false);
             });
@@ -97,6 +95,10 @@ class MongoDB extends Database {
 
     public override isConnected(): boolean {
         return mongoose.connection.readyState === 1;
+    }
+
+    public override databaseName(): string {
+        return "mongodb";
     }
 }
 
