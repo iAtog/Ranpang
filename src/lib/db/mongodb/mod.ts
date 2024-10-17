@@ -43,12 +43,12 @@ class MongoDB extends Database {
         return new Promise((resolve, _reject) => {
             new schema({
                 id: key,
+                type: value.type,
                 gamemode: value.gamemode.toString().toUpperCase(),
                 description: value.description,
                 members: value.members,
                 screenshots: value.screenshots,
-                createdAt: value.createdAt,
-                author: value.author
+                createdAt: value.createdAt
             }).save().then(() => {
                 resolve(true);
             }).catch((e: any) => {
