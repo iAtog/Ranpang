@@ -1,35 +1,73 @@
 import { Database } from "../db/mod.ts";
+import { Embed } from "npm:@notenoughupdates/discord.js-builders";
 
 class TeamsHandler {
-    private teams: Team[] = [];
     private database: Database;
 
     constructor(database: Database) {
         this.database = database;
     }
 
-    public getTeams(): Team[] {
-        return [...this.teams];
+    public getTeams(): Promise<Team[]> {
+        return this.database.getAll();
+    }
+
+    public getTeam(id: string): Promise<Team> {
+        return this.database.get(id);
     }
 
     public saveTeams(): void {
-        // TODO: save teams
+        this.database.save();
     }
 
-    public loadTeams(): void {
-        // TODO: load teams
+    public async addTeam(team: Team): Promise<boolean>{
+        return await this.database.set(team.id, team);
     }
 
-    public addTeam(team: Team) {
-        this.teams.push(team);
+    public createTeamEmbed(team: Team): Embed {
+        const embed = new Embed()
+            .setTitle("Equipo #`" + team.id + "`")
+            .setDescription(team.description)
+            .setColor(0x0a53ab)
+            .setFooter({ text: team.id});
+
+        embed.addField({name: "Miembros del equipo", value: team.members.map(member => member.name).join(", "), inline: true});
+        if(team.screenshots.length > 0) {
+            embed.setImage(team.screenshots[0].url);
+        } else {
+            embed.setImage("https://t3.ftcdn.net/jpg/04/84/88/76/360_F_484887682_Mx57wpHG4lKrPAG0y7Q8Q7bJ952J3TTO.jpg");
+        }
+        return embed;
     }
 
-    public removeTeam(team: Team) {
-        this.teams = this.teams.filter(t => t.id !== team.id);
-    }
+    public getCounter(members: TeamMember[]): Promise<Team> {
+        return new Promise<Team>((resolve, _reject) => {
+            this.database.getAll().then(async(teams) => {
+                for(const team of teams) {
+                    if(team.members.length !== members.length) continue;
+                    if(members[0].key !== team.members[0].key) continue;
 
-    public getCounter(members: TeamMember[]): Team {
-        
+                    const companions1 = new Set(members.slice(1).map(member => member.key));
+                    const companions2 = new Set(team.members.slice(1).map(member => member.key));
+
+                    if(companions1.size !== companions2.size) continue;
+
+                    let isEqual = true;
+
+                    for await (let key of companions1) {
+                        if (!companions2.has(key)) {
+                          isEqual = false;
+                        }
+                    }
+
+                    if(!isEqual) continue;
+
+                    resolve(team);
+                    break;
+                }
+                
+            })
+        })
     }
 /*
     public getTeam(members: TeamMember[]): Team {
@@ -52,28 +90,33 @@ class TeamsHandler {
         return undefined!; 
     }*/
 
-    public createTeam(gamemode: keyof typeof TeamGameMode, description: string, members: TeamMember[]): Team {
+    public createTeamObject(gamemode: TeamGameMode, description: string, members: TeamMember[], screenshots: Screenshot[] = []): Team {
         const id = createTeamId();
-        const team: Team = {
+
+        return {
             id,
-            gamemode: TeamGameMode[gamemode],
-            description: description,
-            members: members,
-            screenshots: [],
+            gamemode,
+            description,
+            members,
+            screenshots,
             createdAt: new Date()
         };
-
-        return team;
     }
-
-    public generateTeamMembers(keys: string[]): TeamMember[] {
+    /**
+     * IN ORDER PLEASE
+     * @param heros 0: LIDER, 1: MEMBER2, 2: MEMBER3, 3: MEMBER4
+     * @returns TEAM MEMBERS {key: string, name: string}[]
+     */
+    public async generateTeamMembers(heros: string[]): Promise<TeamMember[]> {
         const members: TeamMember[] = [];
-        for (let i = 0; i < keys.length; i++) {
-            const key = keys[i];
-            members.push({
-                key: key,
-                name: key
-            });
+        for await (const hero of heros) {
+            const heroApi = await this.getHero(hero);
+            if(heroApi) {
+                members.push({
+                    key: heroApi.key,
+                    name: heroApi.name
+                })
+            }
         }
 
         return members;
