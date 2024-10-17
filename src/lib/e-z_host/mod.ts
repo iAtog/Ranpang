@@ -47,11 +47,11 @@ class EZ_Host {
         const uploaded = await this.upload(image);
 
         if(uploaded && uploaded.success) {
-            this.delete(image);
-            return Promise.resolve(uploaded.imageUrl);
+            await this.delete(image);
+            return Promise.resolve(uploaded.rawUrl);
         }
 
-        this.delete(image);
+        await this.delete(image);
 
         return Promise.reject(new Error("Error uploading image", {cause: uploaded}));
     }
