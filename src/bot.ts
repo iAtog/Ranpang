@@ -1,5 +1,5 @@
 import Bot from "./class/DiscordBot.ts";
-import { Client, CommandInteraction, GatewayIntentBits, AutocompleteInteraction } from "npm:discord.js@14.16.3";
+import { Client, CommandInteraction, GatewayIntentBits, AutocompleteInteraction, ButtonInteraction } from "npm:discord.js@14.16.3";
 import { expandGlob } from "https://deno.land/std@0.224.0/fs/expand_glob.ts";
 import { REST } from 'npm:@discordjs/rest';
 import { Routes } from 'npm:discord-api-types/v9';
@@ -61,8 +61,12 @@ class Ranpang extends Bot {
         }
     }
 
-    public override async onInteraction(interaction: CommandInteraction | AutocompleteInteraction | any): Promise<void> {
+    public override async onInteraction(interaction: CommandInteraction | AutocompleteInteraction): Promise<void> {
         const commands = this.client.commands as Map<string, Command>
+        if(interaction.isButton()) {
+            this.buttonInteraction(interaction)
+            return;
+        }
         if(!commands.has(interaction.commandName)) return;
 
         const command: Command | undefined = commands.get(interaction.commandName);
@@ -86,6 +90,17 @@ class Ranpang extends Bot {
         }
 
         command.run(this.client, interaction);
+    }
+
+    public buttonInteraction(interaction: ButtonInteraction) {
+        const id = interaction.customId;
+
+        if(id === "back" || id === "forward") {
+            const embed = interaction.message.embeds[0];
+            const page: string = embed.fields.find(field => field.name === "Imagen actual")?.value.split("/")[0];
+
+            
+        }
     }
 }
 
