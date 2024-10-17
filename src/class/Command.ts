@@ -1,5 +1,6 @@
 // deno-lint-ignore-file
 import { CommandInteraction, Client, AutocompleteInteraction } from "npm:discord.js";
+import { TeamsHandler, TeamGameMode } from "../lib/team/mod.ts";
 
 abstract class Command {
     public settings: CommandSettings;
@@ -32,7 +33,7 @@ abstract class Command {
         return newStr;
     }
 
-    public async heroAutocomplete(interaction: any, blacklist = []): Promise<void> {
+    public async heroAutocomplete(interaction: AutocompleteInteraction, blacklist = []): Promise<void> {
         const focused = interaction.options.getFocused();
         const response = await fetch("https://www.gtales.top/api/heroes");
         const data: Heroe[] = await response.json();
@@ -40,7 +41,7 @@ abstract class Command {
         // heroes 1 estrella
         blacklistedKeys.push("linda", "bob", "hyper", "maria", "lisa", "leah", "jay", "dragon", "blade", "mina", "hoshida", "peggy", "ailie", "oralie", "kang", "agatha", "davinci", "kate", "zoe", "rio", "nyan", "martyJunior");
 
-        const filtered = data.filter(hero => hero.name.toLowerCase().startsWith(focused.toLowerCase()) && !blacklistedKeys.includes(hero.key));
+        const filtered = data.filter(hero => hero.name.toLowerCase().includes(focused.toLowerCase()) && !blacklistedKeys.includes(hero.key));
         //const filtered = data.filter(hero => hero.name.toLowerCase().startsWith(focused.toLowerCase()));
         let choices = filtered.map(choice => ({ name: this.mayus(choice.name), value: choice.key }));
 
@@ -51,6 +52,21 @@ abstract class Command {
         interaction.respond(
             choices,
         ).catch(console.error);
+    }
+
+    public async gamemodeAutocomplete(interaction: AutocompleteInteraction): Promise<void> {
+        const focused = interaction.options.getFocused(true);
+        const gamemodes = [TeamGameMode.COLOSSEUM, TeamGameMode.RAID, TeamGameMode.TETIS];
+        const filtered = gamemodes.filter(gamemode => gamemode.toString().toLowerCase().includes(focused.value.toString().toLowerCase()));
+        
+        let choices = filtered.map(gamemode => ({ name: this.mayus(gamemode), value: gamemode.toUpperCase() }))
+
+        if(choices.length > 25) {
+            choices = choices.slice(0, 25);
+        }
+
+        interaction.respond(choices)
+            .catch(console.error);
     }
 
     public nonNull(value: any, thing: Function): void {
