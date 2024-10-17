@@ -40,11 +40,11 @@ abstract class Command {
         const blacklistedKeys: string[] = [...blacklist];
         // heroes 1 estrella
         blacklistedKeys.push("linda", "bob", "hyper", "maria", "lisa", "leah", "jay", "dragon", "blade", "mina", "hoshida", "peggy", "ailie", "oralie", "kang", "agatha", "davinci", "kate", "zoe", "rio", "nyan", "martyJunior");
-
+        data.push({ name: "Craig", key: "craig" });
         const filtered = data.filter(hero => hero.name.toLowerCase().includes(focused.toLowerCase()) && !blacklistedKeys.includes(hero.key));
         //const filtered = data.filter(hero => hero.name.toLowerCase().startsWith(focused.toLowerCase()));
         let choices = filtered.map(choice => ({ name: this.mayus(choice.name), value: choice.key }));
-
+        
         if(choices.length > 25) {
             choices = choices.slice(0, 25);
         }
