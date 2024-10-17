@@ -197,9 +197,9 @@ class TeamsHandler {
 }
 
 function createTeamId(): string {
-    const abc = "ABCDEFabcdef0123456789";
+    const abc = "abcdef0123456789";
     let id = "";
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 8; i++) {
         id += abc[Math.floor(Math.random() * abc.length)];
     }
 
