@@ -5,7 +5,7 @@ import { Embed } from "npm:@notenoughupdates/discord.js-builders";
 class Help extends Command {
     constructor() {
         super({
-            name: "ping",
+            name: "pinge",
             description: "Pings the bot",
             restricted: true,
             choices: [
