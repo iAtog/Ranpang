@@ -135,16 +135,17 @@ class Help extends Command {
         
         const teamMembers = await handler.generateTeamMembers([leader!, member2!, member3!, member4!]);
         interaction.editReply({ content: "<a:loading:1296272884955877427> Creando instancia de equipo..."})
-        const team = await handler.getCounter(teamMembers);
+        const team = await handler.getTeamByMembers('COUNTERS', teamMembers);
 
         if(!team) {
-            interaction.editReply({ content: ":x: Error: No se encontró el equipo"})
+            interaction.editReply({ content: ":x: Error: No se encontró el equipo."})
             return;
         }
 
         const embed = handler.createTeamEmbed(team);
+        const rows = handler.getScrollButtons();
 
-        interaction.editReply({ embeds: [embed], content: "" });
+        interaction.editReply({ embeds: [embed], content: "", components: [rows] });
     }
 
     public async crearSubcommand(client: Client, interaction: CommandInteraction, teamsHandler: TeamsHandler): Promise<void> {
@@ -194,7 +195,7 @@ class Help extends Command {
 
         interaction.editReply({ content: "<a:loading:1296272884955877427> Registrando el equipo..."});
         const members = await teamsHandler.generateTeamMembers([leader, member2, member3, member4]);
-        const newTeam = await teamsHandler.createTeamObject(realGameMode, description, members, screenshots);
+        const newTeam = await teamsHandler.createTeamObject("COUNTERS", realGameMode, description, members, screenshots);
 
         const success = await teamsHandler.addTeam(newTeam);
         if(success) {
@@ -205,12 +206,18 @@ class Help extends Command {
         }
     }
 
+    public getPresets(interaction: CommandInteraction, teamsHandler: TeamsHandler): void {
+
+    }
+        
+        
+
     public override async autocomplete(interaction: AutocompleteInteraction): Promise<void> {
         if(interaction.options.getFocused(true).name === "gamemode") {
             await this.gamemodeAutocomplete(interaction);
             return;
         }
-        await this.heroAutocomplete(interaction);
+        await this.heroAutocomplete(interaction, interaction.client.teams.TwoStarHeros());
     }
 }
 
