@@ -99,7 +99,8 @@ interface CommandSettings {
     name: string;
     description: string;
     choices?: CommandChoices[];
-    restricted?: boolean
+    restricted?: boolean;
+    admin?: boolean;
 }
 
 interface CommandChoices {
