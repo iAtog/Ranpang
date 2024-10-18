@@ -118,7 +118,11 @@ class Help extends Command {
         if (interaction.options.data[0].name === "counter") {
             await this.counterSubcommand(client, interaction, teamsHandler);
         } else if (interaction.options.data[0].name === "crear") {
-            this.crearSubcommand(client, interaction, teamsHandler);
+            if(this.settings.admin && interaction.user.id === Deno.env.get("ADMIN_ID")) {
+                this.crearSubcommand(client, interaction, teamsHandler);
+            } else {
+                interaction.reply({ content: ":x: No tienes permisos para crear equipos", ephemeral: true });
+            }
         }
     }
 
@@ -143,7 +147,7 @@ class Help extends Command {
             return;
         }
 
-        const embed = handler.createTeamEmbed(team);
+        //const embed = handler.createTeamEmbed(team);
         //const rows = handler.getScrollButtons() as any;
 
         await interaction.deleteReply();
