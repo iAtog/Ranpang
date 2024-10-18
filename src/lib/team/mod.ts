@@ -1,6 +1,7 @@
 import { Database } from "../db/mod.ts";
 import { Embed, ButtonComponent, ActionRowComponent } from "npm:@notenoughupdates/discord.js-builders";
-import { ButtonBuilder,  ActionRowBuilder, ButtonStyle } from "npm:discord.js";
+import { ButtonBuilder,  ActionRowBuilder } from "npm:discord.js";
+import { PaginatedEmbed } from "npm:embed-paginator";
 
 class TeamsHandler {
     private database: Database;
@@ -56,6 +57,41 @@ class TeamsHandler {
         return embed;
     }
 
+    public createTeamEmbedPaginated(team: Team): PaginatedEmbed {
+        const pages = team.screenshots.length;
+
+        const embed = new PaginatedEmbed({
+            itemsPerPage: 1,
+            paginationType: "description",
+            showFirstLastBtns: false,
+            useEmoji: true
+        })
+        .setDescriptions(this.duplicateValue(team.description, pages))
+        .setImages(team.screenshots.map(screenshot => screenshot.url))
+        .setFields([{ 
+            name: "Miembros", 
+            value: team.members.map(member => member.name).join("\n"), 
+            inline: true 
+        }, {
+            name: "Modo de juego",
+            value: this.mayus(team.gamemode.toLowerCase()),
+            inline: true
+        }])
+        .setTitles(this.duplicateValue("Equipo #``" + team.id + "`` (" + this.mayus(team.type.toLowerCase()) + ")", pages))
+        .setFooters(this.duplicateValue({ text: "{page}" }, pages))
+
+        return embed;
+    }
+
+    // deno-lint-ignore no-explicit-any
+    public duplicateValue(value: any, times: number): any[] {
+        const newArray = [];
+        for (let i = 0; i < times; i++) {
+            newArray.push(value);
+        }
+        return newArray;
+    }
+
     private mayus(str: string) {
         let newStr = "";
 
@@ -102,7 +138,7 @@ class TeamsHandler {
             "marianne", "akayuki", "ranpang", "yuze", "aisha", "shapira", "dolf", "amy", "catherine"
         ]
     }
-
+/*
     public getScrollButtons(): ActionRowBuilder {
         const scrollback = new ButtonBuilder() as unknown as any;
         scrollback.setCustomId("back");
@@ -118,7 +154,7 @@ class TeamsHandler {
 	    row.addComponents(scrollback, scrollforward);
 
         return row;
-    }
+    }*/
     /*
         public getTeam(members: TeamMember[]): Team {
             for (let i = 0; i < this.teams.length; i++) {
