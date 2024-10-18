@@ -1,5 +1,17 @@
 [
     {
+        "key": "karina",
+        "name": "Karina"
+    },
+    {
+        "key": "elvira",
+        "name": "Elvira"
+    },
+    {
+        "key": "craig",
+        "name": "Craig"
+    },
+    {
         "key": "plitvice",
         "name": "Plitvice"
     },
@@ -73,7 +85,7 @@
     },
     {
         "key": "beth",
-        "name": "beth"
+        "name": "Beth"
     },
     {
         "key": "rie",
@@ -254,5 +266,9 @@
     {
         "key": "natsume",
         "name": "Natsume"
+    },
+    {
+        "key": "parvati",
+        "name": "Parvati"
     }
 ]
