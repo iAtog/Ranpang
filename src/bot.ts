@@ -92,15 +92,9 @@ class Ranpang extends Bot {
         command.run(this.client, interaction);
     }
 
-    public buttonInteraction(interaction: ButtonInteraction) {
-        const id = interaction.customId;
-
-        if(id === "back" || id === "forward") {
-            const embed = interaction.message.embeds[0];
-            const page: string = embed.fields.find(field => field.name === "Imagen actual")?.value.split("/")[0];
-
-            
-        }
+    public async buttonInteraction(interaction: ButtonInteraction) {
+        //const id = interaction.customId;
+        
     }
 }
 
