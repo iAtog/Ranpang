@@ -14,6 +14,19 @@ class TeamsHandler {
         return this.database.getAll();
     }
 
+    public async getTeamsByGamemode(gamemode: TeamGameMode): Promise<Team[]> {
+        const teams = await this.database.getAll();
+        return new Promise<Team[]>((resolve, _reject) => {
+            const teamList: Team[] = [];
+            for (const team of teams) {
+                if(team.gamemode.toString().toUpperCase() === gamemode.toString().toUpperCase()) {
+                    teamList.push(team);
+                }
+            }
+            resolve(teamList);
+        });
+    }
+
     public getTeam(id: string): Promise<Team> {
         return this.database.get(id);
     }
@@ -41,8 +54,7 @@ class TeamsHandler {
             
         });
     }
-
-    public async createTeamEmbed(team: Team): Promise<Embed> {
+    public async getMembersWithEmoji(team: Team): Promise<string[]> {
         const members: string[] = [];
 
         for await (const member of team.members) {
@@ -53,6 +65,12 @@ class TeamsHandler {
             }
             members.push(message);
         }
+
+        return members;
+    }
+    public async createTeamEmbed(team: Team): Promise<Embed> {
+        const members: string[] = await this.getMembersWithEmoji(team);
+
         const subida = team.screenshots.length > 0 ? team.screenshots[0].author : "Nadie";
         const embed = new Embed()
             .setTitle("Equipo #``" + team.id + "`` (" + this.mayus(team.type.toLowerCase()) + ")")
@@ -77,6 +95,34 @@ class TeamsHandler {
 
         embed.setTimestamp(team.createdAt);
         return embed;
+    }
+
+    public async createTeamsEmbedPaginated(teams: Team[], gamemode: TeamGameMode): Promise<PaginatedEmbed> {
+        const fields = [];
+        for await (const team of teams) {
+            fields.push(await this.createField(team));
+        }
+
+        const embed = new PaginatedEmbed({
+            itemsPerPage: 4,
+            paginationType: "field",
+            showFirstLastBtns: false,
+            nextBtn: "➡",
+            prevBtn: "⬅"
+        })
+        .setFields(fields)
+        .setTitles(this.duplicateValue("Lista de equipos para " + this.translateGamemode(gamemode).toLowerCase(), teams.length))
+        .setFooters(this.duplicateValue({ text: "{page}" }, teams.length))
+
+        return embed;
+    }
+
+    private async createField(team: Team) {
+        return {
+            name: "Equipo #" + team.id + " (" + this.mayus(team.type.toLowerCase()) + ")",
+            value: (await this.getMembersWithEmoji(team)).join('\n'),
+            inline: true
+        }
     }
 
     public async createTeamEmbedPaginated(team: Team): Promise<PaginatedEmbed> {
@@ -171,29 +217,17 @@ class TeamsHandler {
                         continue;
                     }
                     //console.log(team.gamemode.toString().toUpperCase(), gamemode.toString());
-                    if(team.gamemode.toString().toUpperCase() !== gamemode.toString().toUpperCase()) {
-                        console.log("gamemode dont match");
-                        continue;
-                    }
-                    if (team.members.length !== members.length) {
-                        console.log("Members: " + members.toString());
-                        console.log("DB Members: " + team.members.toString())
-                        console.log("members length dont match");
-                        continue;
-                    }
-                    if (members[0].key !== team.members[0].key) {
-                        console.log("leader dont match");
-                        continue;
-                    }
+                    if(team.gamemode.toString().toUpperCase() !== gamemode.toString().toUpperCase()) continue;
+                    if (team.members.length !== members.length) continue;
+                    if (members[0].key !== team.members[0].key) continue;
                     
 
                     const companions1 = new Set(members.slice(1).map(member => member.key));
                     const companions2 = new Set(team.members.slice(1).map(member => member.key));
 
-                    if (companions1.size !== companions2.size) {
-                        console.log("companions size dont match");
+                    if (companions1.size !== companions2.size)
                         continue;
-                    }
+                    
 
                     let isEqual = true;
 

@@ -72,6 +72,17 @@ class SubcommandUtil {
             return;
         }
 
+        await interaction.editReply({ content: "<a:loading:1296272884955877427> Registrando el equipo..." });
+        const members = await teamsHandler.generateTeamMembers([leader, member2, member3, member4]);
+        const dbTeams = await teamsHandler.getTeamByMembers(realType, members, gamemode)
+
+        if (dbTeams !== undefined) {
+            await interaction.editReply({ content: "Error: Ya existe un equipo con esos miembros, tipo y modo. (ID: `" + dbTeams.id + "`)" });
+            return;
+        }
+
+        const newTeam = await teamsHandler.createTeamObject(realType, gamemode, description, members, screenshots);
+
         if (screenshot) {
             await interaction.editReply({ content: "<a:loading:1296272884955877427> Subiendo imagen al host..." });
             const hostedUrl = await ezApi.createUrl(screenshot);
@@ -85,10 +96,6 @@ class SubcommandUtil {
                 return;
             }
         }
-
-        await interaction.editReply({ content: "<a:loading:1296272884955877427> Registrando el equipo..." });
-        const members = await teamsHandler.generateTeamMembers([leader, member2, member3, member4]);
-        const newTeam = await teamsHandler.createTeamObject(realType, gamemode, description, members, screenshots);
 
         const success = await teamsHandler.addTeam(newTeam);
         if (success) {
@@ -210,6 +217,31 @@ class SubcommandUtil {
 
         await paginatedEmbed.send({
             message: `<@${interaction.user.id}> has consultado el equipo #\`${team.id}\``,
+            options: {
+                channel
+            }
+        })
+    }
+
+    public async listarSubcommand(client: Client, interaction: CommandInteraction, handler: TeamsHandler, gamemode: TeamGameMode) {
+        await interaction.reply({ content: "<a:loading:1296272884955877427> Consultando la base de datos..." })
+
+        const teams = await handler.getTeamsByGamemode(gamemode);
+
+        await interaction.editReply({ content: "<a:loading:1296272884955877427> Listando equipos..." })
+
+        if(teams.length === 0) {
+            await interaction.editReply({ content: ":x: No se encontraron equipos." });
+            return;
+        }
+
+        await interaction.deleteReply();
+
+        const channel = client.channels.cache.get(interaction.channelId) as any;
+        const paginatedEmbed = await handler.createTeamsEmbedPaginated(teams, gamemode);
+
+        await paginatedEmbed.send({
+            message: `<@${interaction.user.id}>`,
             options: {
                 channel
             }

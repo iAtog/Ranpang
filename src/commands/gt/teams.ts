@@ -88,12 +88,12 @@ class Help extends Command {
     }
 
     async run(client: Client, interaction: CommandInteraction) {
-        if (!client.teams) {
+        if (!client.teams!) {
             await interaction.reply({ content: ":x: Ocurrió un error en la carga de datos, por favor intenta nuevamente", ephemeral: true });
             return;
         }
 
-        const handler = client.teams as TeamsHandler;
+        const handler = (client.teams) as TeamsHandler;
         const data = interaction.options.data;
         const gamemode = TeamGameMode.COLOSSEUM;
         const isAdmin = interaction.user.id === Deno.env.get("ADMIN_ID");
@@ -126,6 +126,8 @@ class Help extends Command {
             await interaction.reply({ content: ":x: No se ha implementado la opción de eliminar capturas" });
         } else if(interaction.options.data[0].name === "ver_equipo") {
             await this.subcommandUtil.verEquipoSubcommand(client, interaction, handler, TeamGameMode.COLOSSEUM);
+        } else if(interaction.options.data[0].name === "listar") {
+            await this.subcommandUtil.listarSubcommand(client, interaction, handler, TeamGameMode.COLOSSEUM);
         }
     }
 
