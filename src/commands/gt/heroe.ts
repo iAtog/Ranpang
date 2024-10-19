@@ -30,13 +30,13 @@ class CMD extends Command {
 
         const hero = await handler.getHero(heroName!);
         if (hero === undefined) {
-            interaction.reply({ content: "No se encontró el heroe `" + heroName + "`.", ephemeral: true });
+            interaction.reply({ content: "No hay información de `" + heroName + "` en **gtales.top**.", ephemeral: true });
             return;
         }
 
         // deno-lint-ignore no-explicit-any
         if((hero as unknown as any).warning!) {
-            interaction.reply({ content: "El heroe `" + heroName + "` no está disponible aún.", ephemeral: true });
+            interaction.reply({ content: "No hay información de `" + heroName + "` en **gtales.top**.", ephemeral: true });
             return;
         }
 
