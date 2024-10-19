@@ -2,12 +2,9 @@
 import { Command, ChoiceType } from "../../class/Command.ts";
 import { Client, CommandInteraction, AutocompleteInteraction } from "npm:discord.js";
 import { TeamGameMode, TeamsHandler, TeamType, type Screenshot } from "../../lib/team/mod.ts";
-import EZ_Host from "../../lib/e-z_host/mod.ts";
-import { Database } from "../../lib/db/mod.ts";
-import { SubcommandUtil } from "../../lib/subcommand/mod.ts";
 
 class Help extends Command {
-    private subcommandUtil: SubcommandUtil;
+    
 
     constructor() {
         super({
@@ -88,8 +85,6 @@ class Help extends Command {
                 }
             ]
         });
-
-        this.subcommandUtil = new SubcommandUtil();
     }
 
     async run(client: Client, interaction: CommandInteraction) {

@@ -1,12 +1,15 @@
 // deno-lint-ignore-file
 import { CommandInteraction, Client, AutocompleteInteraction } from "npm:discord.js";
 import { TeamsHandler, TeamGameMode, TeamType } from "../lib/team/mod.ts";
+import { SubcommandUtil } from "../lib/subcommand/mod.ts";
 
 abstract class Command {
     public settings: CommandSettings;
+    public subcommandUtil: SubcommandUtil;
 
     constructor(settings: CommandSettings) {
         this.settings = settings;
+        this.subcommandUtil = new SubcommandUtil();
     }
 
     public abstract run(client: Client, interaction: CommandInteraction): void;
