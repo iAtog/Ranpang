@@ -54,6 +54,12 @@ class LocalDatabase extends Database {
         return Promise.resolve();
     }
 
+    public override update(key: string, value: Team): Promise<boolean> {
+        if (!this.json[key]) return Promise.resolve(false);
+        this.json[key] = value;
+        return Promise.resolve(true);
+    }
+
     public override async close(): Promise<boolean> {
         await this.save();
         return Promise.resolve(true);

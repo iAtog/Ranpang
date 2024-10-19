@@ -58,6 +58,24 @@ class MongoDB extends Database {
         });
     }
 
+    public override update(key: string, value: Team): Promise<boolean> {
+        return new Promise((resolve, _reject) => {
+            schema.updateOne({id: key }, {$set: {
+                type: value.type,
+                gamemode: value.gamemode.toString().toUpperCase(),
+                description: value.description,
+                members: value.members,
+                screenshots: value.screenshots,
+                createdAt: value.createdAt
+            }}).then(() => {
+                resolve(true);
+            }).catch((e: any) => {
+                console.log(e);
+                resolve(false);
+            })
+        });
+    }
+
     public getAll(): Promise<Team[]> {
         return new Promise((resolve, _reject) => {
             schema.find({}).then((data: any[]) => {
