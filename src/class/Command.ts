@@ -1,6 +1,6 @@
 // deno-lint-ignore-file
 import { CommandInteraction, Client, AutocompleteInteraction } from "npm:discord.js";
-import { TeamsHandler, TeamGameMode } from "../lib/team/mod.ts";
+import { TeamsHandler, TeamGameMode, TeamType } from "../lib/team/mod.ts";
 
 abstract class Command {
     public settings: CommandSettings;
@@ -61,6 +61,21 @@ abstract class Command {
         const filtered = gamemodes.filter(gamemode => gamemode.toString().toLowerCase().includes(focused.value.toString().toLowerCase()));
         
         let choices = filtered.map(gamemode => ({ name: this.mayus(gamemode), value: gamemode.toUpperCase() }))
+
+        if(choices.length > 25) {
+            choices = choices.slice(0, 25);
+        }
+
+        interaction.respond(choices)
+            .catch(console.error);
+    }
+
+    public async typeAutocomplete(interaction: AutocompleteInteraction): Promise<void> {
+        const focused = interaction.options.getFocused(true);
+        const gamemodes = [TeamType.COUNTERS, TeamType.PRESET];
+        const filtered = gamemodes.filter(gamemode => gamemode.toString().toLowerCase().includes(focused.value.toString().toLowerCase()));
+        
+        let choices = filtered.map(gamemode => ({ name: gamemode, value: gamemode.toUpperCase() }))
 
         if(choices.length > 25) {
             choices = choices.slice(0, 25);
