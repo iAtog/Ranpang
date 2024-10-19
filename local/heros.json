@@ -1,274 +1,457 @@
 [
     {
         "key": "karina",
-        "name": "Karina"
+        "name": "Karina",
+        "emoji": "<:karina:1296882274540982325>"
     },
     {
         "key": "elvira",
-        "name": "Elvira"
+        "name": "Elvira",
+        "emoji": "<:elv:1296953746957271071>"
     },
     {
         "key": "craig",
-        "name": "Craig"
+        "name": "Craig",
+        "emoji": "<:cra:1296953942210777088>"
     },
     {
         "key": "plitvice",
-        "name": "Plitvice"
+        "name": "Plitvice",
+        "emoji": "<:pli:1296954066420895784>"
     },
     {
         "key": "lapice",
-        "name": "Lapice"
+        "name": "Lapice",
+        "emoji": "<:lap:1296954217893990410>"
     },
     {
         "key": "marina",
-        "name": "Marina"
+        "name": "Marina",
+        "emoji": "<:mar:1296954369593311353>"
     },
     {
         "key": "arabelle",
-        "name": "Arabelle"
+        "name": "Arabelle",
+        "emoji": "<:arabelle:1296954547339661462>"
     },
     {
         "key": "idolEva",
-        "name": "Eva Idol"
+        "name": "Eva Idol",
+        "emoji": "<:ido:1296954723878047805>"
     },
     {
         "key": "bari",
-        "name": "Bari"
+        "name": "Bari",
+        "emoji": "<:bar:1296954868283474030>"
     },
     {
         "key": "lupina",
-        "name": "Lupina"
+        "name": "Lupina",
+        "emoji": "<:lup:1296954981802311680>"
     },
     {
         "key": "lahn",
-        "name": "Lahn"
+        "name": "Lahn",
+        "emoji": "<:lah:1296955106536980541>"
     },
     {
         "key": "eugene",
-        "name": "Eugene"
+        "name": "Eugene",
+        "emoji": "<:eug:1296955259150925864>"
     },
     {
         "key": "tinia",
-        "name": "Tinia"
+        "name": "Tinia",
+        "emoji": "<:tin:1296956402610340002>"
     },
     {
         "key": "vishuvac",
-        "name": "Vishuvac"
+        "name": "Vishuvac",
+        "emoji": "<:vis:1296956526640107652>"
     },
     {
         "key": "nari",
-        "name": "Nari"
+        "name": "Nari",
+        "emoji": "<:nar:1296956634442235924>"
     },
     {
         "key": "bianca",
-        "name": "Bianca"
+        "name": "Bianca",
+        "emoji": "<:bia:1296956755347243059>"
     },
     {
         "key": "oghma",
-        "name": "Oghma"
+        "name": "Oghma",
+        "emoji": "<:ogh:1296956864709398578>"
     },
     {
         "key": "alef",
-        "name": "Alef"
+        "name": "Alef",
+        "emoji": "<:ale:1296957021286957117>"
     },
     {
         "key": "miya",
-        "name": "Miya"
+        "name": "Miya",
+        "emoji": "<:miy:1296957201377923072>"
     },
     {
         "key": "futurPrincess",
-        "name": "Princesa futura"
+        "name": "Princesa futura",
+        "emoji": "<:fp:1296957522976178297>"
     },
     {
         "key": "garam",
-        "name": "Garam"
+        "name": "Garam",
+        "emoji": "<:gar:1296957684356092024>"
     },
     {
         "key": "beth",
-        "name": "Beth"
-    },
-    {
-        "key": "rie",
-        "name": "Rie"
+        "name": "Beth",
+        "emoji": "<:beth:1294588766333304872>"
     },
     {
         "key": "rue",
-        "name": "Rue"
-    },
-    {
-        "key": "neva",
-        "name": "Neva"
+        "name": "Rue",
+        "emoji": "<:rue:1296957905697767476>"
     },
     {
         "key": "gabriel",
-        "name": "Gabriel"
+        "name": "Gabriela",
+        "emoji": "<:gab:1296958064515354684>"
     },
     {
         "key": "lynn",
-        "name": "Lynn"
+        "name": "Lynn",
+        "emoji": "<:lyn:1296958536806301737>"
     },
     {
         "key": "futureKnight",
-        "name": "Caballera futura"
+        "name": "Caballera futura",
+        "emoji": "<:fk:1296958760559837225>"
     },
     {
         "key": "veronica",
-        "name": "Veronica"
+        "name": "Veronica",
+        "emoji": "<:ver:1296958911986798694>"
     },
     {
         "key": "noxia",
-        "name": "Noxia"
+        "name": "Noxia",
+        "emoji": "<:nox:1296959070284025856>"
     },
     {
         "key": "mayreel",
-        "name": "Mayreel"
+        "name": "Mayreel",
+        "emoji": "<:may:1296959236823187507>"
     },
     {
         "key": "mk99",
-        "name": "Mk.99"
+        "name": "Mk.99",
+        "emoji": "<:mk9:1296959431287902248>"
     },
     {
         "key": "lilith",
-        "name": "Lilith"
-    },
-    {
-        "key": "lahn_2",
-        "name": "Lahn"
+        "name": "Lilith",
+        "emoji": "<:lil:1296959556907302932>"
     },
     {
         "key": "chunRyeo",
-        "name": "Chun Ryeo"
+        "name": "Chun Ryeo",
+        "emoji": "<:chu:1296959716458627082>"
     },
     {
         "key": "ameris",
-        "name": "Ameris"
+        "name": "Ameris",
+        "emoji": "<:ame:1296959884155293808>"
     },
     {
         "key": "sia",
-        "name": "Sia"
+        "name": "Sia",
+        "emoji": "<:sia:1296959994134270095>"
     },
     {
         "key": "euhna",
-        "name": "Eunha"
+        "name": "Eunha",
+        "emoji": "<:euh:1296960700203270144>"
     },
     {
         "key": "summerShapira",
-        "name": "Shapira"
+        "name": "Shapira",
+        "emoji": "<:sha:1296960930394935397>"
     },
     {
         "key": "morrian",
-        "name": "Morrian"
+        "name": "Morrian",
+        "emoji": "<:mor:1296961060397649983>"
     },
     {
         "key": "vinette",
-        "name": "Vinette"
+        "name": "Vinette",
+        "emoji": "<:vin:1296961842895126610>"
     },
     {
         "key": "winLing",
-        "name": "Win Ling"
+        "name": "Win Ling",
+        "emoji": "<:win:1296962050370834482>"
     },
     {
         "key": "odile",
-        "name": "Odile"
+        "name": "Odile",
+        "emoji": "<:odi:1296962374170841172>"
     },
     {
         "key": "mikke",
-        "name": "Mikke"
+        "name": "Mikke",
+        "emoji": "<:mik:1296962705512599593>"
     },
     {
         "key": "coco",
-        "name": "Coco (Ascendida)"
-    },
-    {
-        "key": "bari_2",
-        "name": "Bari (segunda arma)"
+        "name": "Coco",
+        "emoji": "<:coc:1296962830838272043>"
     },
     {
         "key": "angie",
-        "name": "Angie"
+        "name": "Angie",
+        "emoji": "<:ang:1296962952691192000>"
     },
     {
         "key": "plagueDoctor",
-        "name": "Doctor Peste"
+        "name": "Doctor Peste",
+        "emoji": "<:pd:1296963093104164935>"
     },
     {
         "key": "yuuna",
-        "name": "Yuna"
+        "name": "Yuna",
+        "emoji": "<:yuna:1296963497716088832>"
     },
     {
         "key": "rimuru",
-        "name": "Rimuru Tempest"
+        "name": "Rimuru Tempest",
+        "emoji": "<:rim:1296963583896457228>"
     },
     {
         "key": "shuna",
-        "name": "Shuna"
+        "name": "Shuna",
+        "emoji": "<:shu:1296963692621074545>"
     },
     {
         "key": "milim",
-        "name": "Milim Nava"
+        "name": "Milim Nava",
+        "emoji": "<:mil:1296963902298525716>"
     },
     {
         "key": "estelle",
-        "name": "Estel"
+        "name": "Estel",
+        "emoji": "<:est:1296964098059272254>"
     },
     {
         "key": "toga",
-        "name": "Toga"
+        "name": "Toga",
+        "emoji": "<:tog:1296964671349461053>"
     },
     {
         "key": "yun",
-        "name": "Yun"
+        "name": "Yun",
+        "emoji": "<:yun:1296964985078943805>"
     },
     {
         "key": "knight",
-        "name": "Caballero/a"
-    },
-    {
-        "key": "knight_2",
-        "name": "Knight (Alt)"
+        "name": "Caballero/a",
+        "emoji": "<:kni:1296965247718129795>"
     },
     {
         "key": "cornet",
-        "name": "Cornet"
+        "name": "Cornet",
+        "emoji": "<:cor:1296965372536291398>"
     },
     {
         "key": "lena",
-        "name": "Lena"
+        "name": "Lena",
+        "emoji": "<:len:1296965682889625762>"
     },
     {
         "key": "dabin",
-        "name": "Dabin"
+        "name": "Dabin",
+        "emoji": "<:dab:1296965764128964672>"
     },
     {
         "key": "summerRachel",
-        "name": "Rachel (Playa)"
+        "name": "Rachel (Playa)",
+        "emoji": "<:rac3:1296965989979787394>"
     },
     {
         "key": "summerSohee",
-        "name": "Sohee (Playa)"
+        "name": "Sohee (Playa)",
+        "emoji": "<:soh:1296966241659129907>"
     },
     {
         "key": "saya",
-        "name": "Saya"
+        "name": "Saya",
+        "emoji": "<:say:1296966351604289618>"
     },
     {
         "key": "anna",
-        "name": "Anna"
+        "name": "Anna",
+        "emoji": "<:ann:1296966524934029332>"
     },
     {
         "key": "ruri",
-        "name": "Ruri"
-    },
-    {
-        "key": "garam_2",
-        "name": "Garam (segunda arma)"
+        "name": "Ruri",
+        "emoji": "<:rur:1296966618932580417>"
     },
     {
         "key": "natsume",
-        "name": "Natsume"
+        "name": "Natsume",
+        "emoji": "<:nat:1296966731453173860>"
     },
     {
         "key": "parvati",
-        "name": "Parvati"
+        "name": "Parvati",
+        "emoji": "<:par:1296966817100857385>"
+    },
+    {
+        "key": "lucy",
+        "name": "Lucy",
+        "emoji": "<:luc:1296971358290317496>"
+    },
+    {
+        "key": "yuze",
+        "name": "Yuze",
+        "emoji": "<:yuz:1296972296543797279>"
+    },
+    {
+        "key": "eleonor",
+        "name": "Eleanor",
+        "emoji": "<:ele:1296972347638808676>"
+    },
+    {
+        "key": "scintilla",
+        "name": "Centella",
+        "emoji": "<:sci:1296972392144306206>"
+    },
+    {
+        "key": "erina",
+        "name": "Erina",
+        "emoji": "<:eri:1296972434880204862>"
+    },
+    {
+        "key": "kamael",
+        "name": "Kamael",
+        "emoji": "<:kam:1296972471534227568>"
+    },
+    {
+        "key": "mk2",
+        "name": "Mk.2",
+        "emoji": "<:mk2:1296971462145474591>"
+    },
+    {
+        "key": "orca",
+        "name": "Orca",
+        "emoji": "<:orc:1296972526647246938>"
+    },
+    {
+        "key": "kanna",
+        "name": "Kanna",
+        "emoji": "<:kan:1296972569026494574>"
+    },
+    {
+        "key": "hana",
+        "name": "Hana",
+        "emoji": "<:han:1296972638635294721>"
+    },
+    {
+        "key": "carol",
+        "name": "Carol",
+        "emoji": "<:car:1296972686978973747>"
+    },
+    {
+        "key": "clara",
+        "name": "Clara",
+        "emoji": "<:cla2:1296972737306296361>"
+    },
+    {
+        "key": "priscilla",
+        "name": "Priscilla",
+        "emoji": "<:pri:1296972845930381447>"
+    },
+    {
+        "key": "claude",
+        "name": "Claudio",
+        "emoji": "<:cla:1296972819997130852>"
+    },
+    {
+        "key": "ara2",
+        "name": "Ara",
+        "emoji": "<:ara2:1296972921901682693>"
+    },
+    {
+        "key": "rey",
+        "name": "Rey",
+        "emoji": "<:rey:1296972969226276985>"
+    },
+    {
+        "key": "aa72",
+        "name": "AA-72",
+        "emoji": "<:aa7:1296973011269980232>"
+    },
+    {
+        "key": "lorr",
+        "name": "Loraine (playa)",
+        "emoji": "<:lorr:1296973195110518835>"
+    },
+    {
+        "key": "mad",
+        "name": "Trio panda loco",
+        "emoji": "<:pan:1296973235916767253>"
+    },
+    {
+        "key": "chrome",
+        "name": "Miss. Chrome",
+        "emoji": "<:chr:1296973867318771802>"
+    },
+    {
+        "key": "valencia",
+        "name": "Valencia",
+        "emoji": "<:val:1296973913099730954>"
+    },
+    {
+        "key": "croselle",
+        "name": "Croselle",
+        "emoji": "<:cro:1296973965893304381>"
+    },
+    {
+        "key": "andras",
+        "name": "Andras",
+        "emoji": "<:and:1296974012353740891>"
+    },
+    {
+        "key": "sumire",
+        "name": "Sumire",
+        "emoji": "<:sum:1296974049964195901>"
+    },
+    {
+        "key": "pymon",
+        "name": "Paimon",
+        "emoji": "<:pym:1296974087360610335>"
+    },
+    {
+        "key": "rosetta",
+        "name": "Rosetta",
+        "emoji": "<:ros:1296974133292302379>"
+    },
+    {
+        "key": "whiteBeast",
+        "name": "Nieve blanca",
+        "emoji": "<:whi:1296974174287298600>"
+    },
+    {
+        "key": "fcc",
+        "name": "Comandante 1er cuerpo",
+        "emoji": "<:fcc:1296974234366775328>"
+    },
+    {
+        "key": "kai",
+        "name": "Kai",
+        "emoji": "<:kai:1296974273465810974>"
     }
 ]
