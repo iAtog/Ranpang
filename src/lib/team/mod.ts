@@ -57,8 +57,19 @@ class TeamsHandler {
         return embed;
     }
 
-    public createTeamEmbedPaginated(team: Team): PaginatedEmbed {
+    public async createTeamEmbedPaginated(team: Team): PaginatedEmbed {
         const pages = team.screenshots.length;
+
+        const members: string[] = [];
+
+        for await (const member of team.members) {
+            const emoji = await this.getHeroEmoji(member.key);
+            let message = `${emoji} ${this.mayus(member.name)}`;
+            if (member.key === team.members[0].key) {
+                message += " :crown:";
+            }
+            members.push(message);
+        }
 
         const embed = new PaginatedEmbed({
             itemsPerPage: 1,
@@ -70,7 +81,7 @@ class TeamsHandler {
         .setImages(team.screenshots.map(screenshot => screenshot.url))
         .setFields([{ 
             name: "Miembros", 
-            value: team.members.map(member => member.name).join("\n"), 
+            value: members.join('\n'), 
             inline: true 
         }, {
             name: "Modo de juego",
@@ -81,6 +92,19 @@ class TeamsHandler {
         .setFooters(this.duplicateValue({ text: "{page}" }, pages))
 
         return embed;
+    }
+
+    public async getHeroEmoji(key: string): Promise<string> {
+        const heros = await this.getCustomHeros();
+        let emoji = "";
+        for await (const hero of heros) {
+            if (hero.key === key) {
+                emoji = hero.emoji;
+                break;
+            }
+        }
+
+        return emoji;
     }
 
     // deno-lint-ignore no-explicit-any
@@ -101,13 +125,15 @@ class TeamsHandler {
         return newStr;
     }
 
-    public getTeamByMembers(type: keyof typeof TeamType, members: TeamMember[]): Promise<Team> {
+    public getTeamByMembers(type: keyof typeof TeamType, members: TeamMember[], gamemode: TeamGameMode): Promise<Team> {
         return new Promise<Team>((resolve, _reject) => {
             this.database.getAll().then(async (teams) => {
                 for (const team of teams) {
                     if (team.type !== type.toString()) continue;
+                    if(team.gamemode.toString() !== gamemode.toString()) continue;
                     if (team.members.length !== members.length) continue;
                     if (members[0].key !== team.members[0].key) continue;
+                    
 
                     const companions1 = new Set(members.slice(1).map(member => member.key));
                     const companions2 = new Set(team.members.slice(1).map(member => member.key));
@@ -133,10 +159,7 @@ class TeamsHandler {
     }
 
     public TwoStarHeros(): string[] {
-        return [
-            "eva", "whiteBeast", "loraine", "lavi", "favi", "aoba", "gremory", "rachel", "hekate",
-            "marianne", "akayuki", "ranpang", "yuze", "aisha", "shapira", "dolf", "amy", "catherine"
-        ]
+        return []
     }
 /*
     public getScrollButtons(): ActionRowBuilder {
@@ -209,6 +232,15 @@ class TeamsHandler {
         return members;
     }
 
+    public async getCustomHeros(): Promise<CustomHero[]> {
+        const heros = await import("../../../local/heros.json", {
+            with: { type: "json" },
+        });
+        
+        const list = heros.default as CustomHero[];
+        return list;
+    }
+
     public async getHero(name: string): Promise<Heroe> {
         const response = await fetch("https://www.gtales.top/api/heroes?hero=" + name);
         const data = await response.json();
@@ -220,15 +252,8 @@ class TeamsHandler {
         return data as Heroe;
     }
 
-    public async getHeroes(): Promise<TeamMember[]> {
-        const response = await fetch("https://www.gtales.top/api/heroes");
-        const data = await response.json();
-
-        if (data.error) {
-            return [];
-        }
-
-        return data as TeamMember[];
+    public async getHeroes(): Promise<CustomHero[]> {
+        return await this.getCustomHeros()
     }
 }
 
@@ -265,6 +290,10 @@ interface Screenshot {
 interface TeamMember {
     name: string;
     key: string;
+}
+
+interface CustomHero extends TeamMember {
+    emoji: string;
 }
 
 enum TeamGameMode {
