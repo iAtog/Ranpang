@@ -140,7 +140,7 @@ class Help extends Command {
 
         const teamMembers = await handler.generateTeamMembers([leader!, member2!, member3!, member4!]);
         interaction.editReply({ content: "<a:loading:1296272884955877427> Creando instancia de equipo..." })
-        const team = await handler.getTeamByMembers('COUNTERS', teamMembers);
+        const team = await handler.getTeamByMembers('COUNTERS', teamMembers, TeamGameMode.COLOSSEUM);
 
         if (!team) {
             interaction.editReply({ content: ":x: Error: No se encontró el equipo." })
@@ -153,7 +153,7 @@ class Help extends Command {
         await interaction.deleteReply();
 
         const channel = client.channels.cache.get(interaction.channelId);
-        const paginatedEmbed = handler.createTeamEmbedPaginated(team);
+        const paginatedEmbed = await handler.createTeamEmbedPaginated(team);
 
         await paginatedEmbed.send({
             message: `<@${interaction.user.id}>`,
