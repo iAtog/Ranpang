@@ -1,7 +1,7 @@
 import { Database } from "../db/mod.ts";
 import { Embed, ButtonComponent, ActionRowComponent } from "npm:@notenoughupdates/discord.js-builders";
 import { ButtonBuilder,  ActionRowBuilder } from "npm:discord.js";
-import { PaginatedEmbed } from "npm:embed-paginator";
+import { PaginatedEmbed } from "../embedpaginator/mod.ts";
 
 class TeamsHandler {
     private database: Database;
@@ -26,40 +26,23 @@ class TeamsHandler {
         return await this.database.set(team.id, team);
     }
 
-    public createTeamEmbed(team: Team): Embed {
-        const embed = new Embed()
-            .setTitle("Equipo #``" + team.id + "`` (" + this.mayus(team.type.toLowerCase()) + ")")
-            .setDescription("**" + team.description + "**")
-            .setColor(0x0eb482)
-            .setFooter({ text: team.id });
-
-        embed.addFields({ 
-            name: "Miembros", 
-            value: team.members.map(member => member.name).join("\n"), 
-            inline: true 
-        }, {
-            name: "Modo de juego",
-            value: this.mayus(team.gamemode.toLowerCase()),
-            inline: true
+    public existsHero(id: string): Promise<boolean> {
+        return new Promise<boolean>((resolve, _reject) => {
+            this.getCustomHeros().then(async (heroes) => {
+                for await (const hero of heroes) {
+                    if (hero.key === id) {
+                        resolve(true);
+                        break;
+                    }
+                }
+                
+                resolve(false);
+            });
+            
         });
-        if (team.screenshots.length > 0) {
-            embed.setImage(team.screenshots[0].url);
-        } else {
-            embed.setImage("https://t3.ftcdn.net/jpg/04/84/88/76/360_F_484887682_Mx57wpHG4lKrPAG0y7Q8Q7bJ952J3TTO.jpg");
-        }
-
-        embed.setTimestamp(team.createdAt);
-        embed.addFields({
-            name: "Imagen actual",
-            value: "1/" + team.screenshots.length,
-            inline: true
-        })
-        return embed;
     }
 
-    public async createTeamEmbedPaginated(team: Team): PaginatedEmbed {
-        const pages = team.screenshots.length;
-
+    public async createTeamEmbed(team: Team): Promise<Embed> {
         const members: string[] = [];
 
         for await (const member of team.members) {
@@ -70,22 +53,64 @@ class TeamsHandler {
             }
             members.push(message);
         }
+        const subida = team.screenshots.length > 0 ? team.screenshots[0].author : "Nadie";
+        const embed = new Embed()
+            .setTitle("Equipo #``" + team.id + "`` (" + this.mayus(team.type.toLowerCase()) + ")")
+            .setDescription(`${team.description}\n\n> Imagen subida por: **${subida}**`)
+            .setColor(0x0eb482)
+            .setFooter({ text: team.id });
 
+        embed.addFields({ 
+            name: "Miembros", 
+            value: members.join('\n'), 
+            inline: true 
+        }, {
+            name: "Modo de juego",
+            value: this.translateGamemode(team.gamemode),
+            inline: true
+        });
+        if (team.screenshots.length > 0) {
+            embed.setImage(team.screenshots[0].url);
+        } else {
+            embed.setImage("https://t3.ftcdn.net/jpg/04/84/88/76/360_F_484887682_Mx57wpHG4lKrPAG0y7Q8Q7bJ952J3TTO.jpg");
+        }
+
+        embed.setTimestamp(team.createdAt);
+        return embed;
+    }
+
+    public async createTeamEmbedPaginated(team: Team): Promise<PaginatedEmbed> {
+        const pages = team.screenshots.length;
+        //console.log(team)
+        const members: string[] = [];
+
+        for await (const member of team.members) {
+            const emoji = await this.getHeroEmoji(member.key);
+            let message = `${emoji} ${this.mayus(member.name)}`;
+            if (member.key === team.members[0].key) {
+                message += " :crown:";
+            }
+            members.push(message);
+        }
+        const descriptions = this.duplicateValue(team.description, pages, team.screenshots.map(screenshot => (`\n\n> Imagen subida por: **${screenshot.author}**`)));
+        //console.log("Descriptions: ", descriptions);
+        const images = pages > 0 ? team.screenshots.map(screenshot => screenshot.url) : ["https://t3.ftcdn.net/jpg/04/84/88/76/360_F_484887682_Mx57wpHG4lKrPAG0y7Q8Q7bJ952J3TTO.jpg"]
         const embed = new PaginatedEmbed({
             itemsPerPage: 1,
             paginationType: "description",
             showFirstLastBtns: false,
-            useEmoji: true
+            nextBtn: "➡",
+            prevBtn: "⬅"
         })
-        .setDescriptions(this.duplicateValue(team.description, pages))
-        .setImages(team.screenshots.map(screenshot => screenshot.url))
+        .setDescriptions(descriptions)
+        .setImages(images)
         .setFields([{ 
             name: "Miembros", 
             value: members.join('\n'), 
             inline: true 
         }, {
             name: "Modo de juego",
-            value: this.mayus(team.gamemode.toLowerCase()),
+            value: this.translateGamemode(team.gamemode),
             inline: true
         }])
         .setTitles(this.duplicateValue("Equipo #``" + team.id + "`` (" + this.mayus(team.type.toLowerCase()) + ")", pages))
@@ -108,12 +133,24 @@ class TeamsHandler {
     }
 
     // deno-lint-ignore no-explicit-any
-    public duplicateValue(value: any, times: number): any[] {
-        const newArray = [];
-        for (let i = 0; i < times; i++) {
-            newArray.push(value);
+    public duplicateValue(value: string | object, times: number, addition: string[] = []): any[] {
+        if(times === 0) {
+            return [value];
+        } else {
+            if(addition.length === 0) {
+                const newArray = [];
+                for (let i = 0; i < times; i++) {
+                    newArray.push(value);
+                }
+                return newArray;
+            } else {
+                const newArray = [];
+                for (let i = 0; i < times; i++) {
+                    newArray.push(value + (addition[i] ?? ""));
+                }
+                return newArray;
+            }
         }
-        return newArray;
     }
 
     private mayus(str: string) {
@@ -128,21 +165,39 @@ class TeamsHandler {
     public getTeamByMembers(type: keyof typeof TeamType, members: TeamMember[], gamemode: TeamGameMode): Promise<Team> {
         return new Promise<Team>((resolve, _reject) => {
             this.database.getAll().then(async (teams) => {
-                for (const team of teams) {
-                    if (team.type !== type.toString()) continue;
-                    if(team.gamemode.toString() !== gamemode.toString()) continue;
-                    if (team.members.length !== members.length) continue;
-                    if (members[0].key !== team.members[0].key) continue;
+                for await (const team of teams) {
+                    if (team.type !== type.toString()) {
+                        console.log("type dont match");
+                        continue;
+                    }
+                    //console.log(team.gamemode.toString().toUpperCase(), gamemode.toString());
+                    if(team.gamemode.toString().toUpperCase() !== gamemode.toString().toUpperCase()) {
+                        console.log("gamemode dont match");
+                        continue;
+                    }
+                    if (team.members.length !== members.length) {
+                        console.log("Members: " + members.toString());
+                        console.log("DB Members: " + team.members.toString())
+                        console.log("members length dont match");
+                        continue;
+                    }
+                    if (members[0].key !== team.members[0].key) {
+                        console.log("leader dont match");
+                        continue;
+                    }
                     
 
                     const companions1 = new Set(members.slice(1).map(member => member.key));
                     const companions2 = new Set(team.members.slice(1).map(member => member.key));
 
-                    if (companions1.size !== companions2.size) continue;
+                    if (companions1.size !== companions2.size) {
+                        console.log("companions size dont match");
+                        continue;
+                    }
 
                     let isEqual = true;
 
-                    for await (let key of companions1) {
+                    for await (const key of companions1) {
                         if (!companions2.has(key)) {
                             isEqual = false;
                         }
@@ -154,6 +209,8 @@ class TeamsHandler {
                     break;
                 }
 
+                resolve(undefined!);
+
             })
         })
     }
@@ -161,43 +218,6 @@ class TeamsHandler {
     public TwoStarHeros(): string[] {
         return []
     }
-/*
-    public getScrollButtons(): ActionRowBuilder {
-        const scrollback = new ButtonBuilder() as unknown as any;
-        scrollback.setCustomId("back");
-        scrollback.setLabel("◀");
-        scrollback.setStyle(ButtonStyle.Primary)
-
-        const scrollforward = new ButtonBuilder() as unknown as any;
-        scrollforward.setCustomId("forward")
-        scrollforward.setLabel("▶");
-        scrollforward.setStyle(ButtonStyle.Primary)
-
-        const row = new ActionRowBuilder() as unknown as any;
-	    row.addComponents(scrollback, scrollforward);
-
-        return row;
-    }*/
-    /*
-        public getTeam(members: TeamMember[]): Team {
-            for (let i = 0; i < this.teams.length; i++) {
-                const team = this.teams[i];
-                if (team.members.length === members.length) {
-                    let isEqual = true;
-                    for (let j = 0; j < team.members.length; j++) {
-                        if (team.members[j].key !== members[j].key) {
-                            isEqual = false;
-                            break;
-                        }
-                    }
-                    if (isEqual) {
-                        return team;
-                    }
-                }
-            }
-            //this.createTeam("COLOSSEUM", "Test", [{key: "test", name: "Test"}]);
-            return undefined!; 
-        }*/
 
     public createTeamObject(type: keyof typeof TeamType, gamemode: TeamGameMode, description: string, members: TeamMember[], screenshots: Screenshot[] = []): Team {
         const id = createTeamId();
@@ -212,6 +232,20 @@ class TeamsHandler {
             createdAt: new Date()
         };
     }
+
+    public translateGamemode(gamemode: TeamGameMode): string {
+        if(gamemode.toUpperCase() === "COLOSSEUM") {
+            return "Coliseo";
+        } else if(gamemode.toUpperCase() === "RAID") {
+            return "Asalto";
+        } else if(gamemode.toUpperCase() === "TETIS") {
+            return "Tetis heroes";
+        } else {
+            console.log("Unknown gamemode: " + gamemode);
+            return "Desconocido.";
+        }
+    }
+
     /**
      * IN ORDER PLEASE
      * @param heros 0: LIDER, 1: MEMBER2, 2: MEMBER3, 3: MEMBER4
@@ -220,7 +254,7 @@ class TeamsHandler {
     public async generateTeamMembers(heros: string[]): Promise<TeamMember[]> {
         const members: TeamMember[] = [];
         for await (const hero of heros) {
-            const heroApi = await this.getHero(hero);
+            const heroApi = await this.getCustomHero(hero);
             if (heroApi) {
                 members.push({
                     key: heroApi.key,
@@ -239,6 +273,21 @@ class TeamsHandler {
         
         const list = heros.default as CustomHero[];
         return list;
+    }
+
+    public getCustomHero(name: string): Promise<CustomHero> {
+        return new Promise<CustomHero>((resolve, _reject) => {
+            this.getCustomHeros().then(async (heroes) => {
+                for await (const hero of heroes) {
+                    if (hero.key === name) {
+                        resolve(hero);
+                        break;
+                    }
+                }
+                
+                resolve(undefined!);
+            }); 
+        });
     }
 
     public async getHero(name: string): Promise<Heroe> {
@@ -373,7 +422,8 @@ interface WeaponSkill {
 export {
     TeamsHandler,
     TeamGameMode,
-    createTeamId
+    createTeamId,
+    TeamType
 }
 
 export type {
