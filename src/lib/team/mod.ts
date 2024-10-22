@@ -103,7 +103,7 @@ class TeamsHandler {
         for await (const team of teams) {
             fields.push(await this.createField(team));
         }
-
+        const pages = (teams.length / 6);
         const embed = new PaginatedEmbed({
             itemsPerPage: 6,
             paginationType: "field",
@@ -114,16 +114,16 @@ class TeamsHandler {
         })
         .setFields(fields)
         .setTimestamp(Date.now())
-        .setColours(this.duplicateValue('Aqua', teams.length))
+        .setColours(this.duplicateValue('Aqua', pages))
         .setDescriptions(["# Lista de equipos para " + this.translateGamemode(gamemode).toLowerCase()])
-        .setFooters(this.duplicateValue({ text: "{page}" }, teams.length))
+        .setFooters(this.duplicateValue({ text: "{page}" }, pages))
 
         return embed;
     }
 
     private async createField(team: Team) {
         return {
-            name: "Equipo #" + team.id + " (" + this.mayus(team.type.toLowerCase()) + ")",
+            name: "Equipo `#" + team.id + "` (" + this.mayus(team.type.toLowerCase()) + ")",
             value: (await this.getMembersWithEmoji(team)).join('\n'),
             inline: true
         }
