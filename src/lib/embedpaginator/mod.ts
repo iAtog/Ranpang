@@ -168,7 +168,7 @@ export class PaginatedEmbed {
 
         const currentPage = `${this.currentPage}`;
         const maxPage = `${this.pages.length === 0 ? 1 : this.pages.length}`;
-        const pageNumber = `Page ${currentPage} of ${maxPage}`;
+        const pageNumber = `Página ${currentPage}/${maxPage}`;
 
         const footer = this.pages[this.currentPage - 1]?.footers![0]?.text
             .replace(/{page}/gi, pageNumber)
