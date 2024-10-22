@@ -1,11 +1,8 @@
-
 import { Command, ChoiceType } from "../../class/Command.ts";
 import { Client, CommandInteraction, AutocompleteInteraction } from "npm:discord.js";
-import { TeamGameMode, TeamsHandler, TeamType, type Screenshot } from "../../lib/team/mod.ts";
+import { TeamGameMode, TeamsHandler, TeamType } from "../../lib/team/mod.ts";
 
 class Help extends Command {
-    
-
     constructor() {
         super({
             name: "coliseo",
@@ -27,10 +24,10 @@ class Help extends Command {
                     description: "Ver como está equipado cierto equipo.",
                     name: "presets",
                     options: [
-                        { type: ChoiceType.STRING, name: "leader" , description: "Lider del grupo", required: true, autocomplete: true },
+                        { type: ChoiceType.STRING, name: "leader", description: "Lider del grupo", required: true, autocomplete: true },
                         { type: ChoiceType.STRING, name: "member2", description: "Segundo miembro", required: true, autocomplete: true },
-                        { type: ChoiceType.STRING, name: "member3", description: "Tercer miembro",  required: true, autocomplete: true },
-                        { type: ChoiceType.STRING, name: "member4", description: "Cuarto miembro",  required: true, autocomplete: true }
+                        { type: ChoiceType.STRING, name: "member3", description: "Tercer miembro", required: true, autocomplete: true },
+                        { type: ChoiceType.STRING, name: "member4", description: "Cuarto miembro", required: true, autocomplete: true }
                     ]
                 },
                 {
@@ -42,8 +39,8 @@ class Help extends Command {
                         { type: ChoiceType.STRING, name: "description", description: "Descripción del equipo (puede ser una nota)", required: true },
                         { type: ChoiceType.STRING, name: "leader", description: "Lider del grupo", required: true, autocomplete: true },
                         { type: ChoiceType.STRING, name: "member2", description: "Segundo miembro", required: true, autocomplete: true },
-                        { type: ChoiceType.STRING, name: "member3", description: "Tercer miembro",  required: true, autocomplete: true },
-                        { type: ChoiceType.STRING, name: "member4", description: "Cuarto miembro",  required: true, autocomplete: true },
+                        { type: ChoiceType.STRING, name: "member3", description: "Tercer miembro", required: true, autocomplete: true },
+                        { type: ChoiceType.STRING, name: "member4", description: "Cuarto miembro", required: true, autocomplete: true },
                         { type: ChoiceType.ATTACHMENT, name: "screenshot", description: "Imagen de registro de batalla con victoria" },
                         { type: ChoiceType.STRING, name: "author", description: "Nombre del autor de la imagen" }
                     ]
@@ -52,9 +49,7 @@ class Help extends Command {
                     type: ChoiceType.SUB_COMMAND,
                     description: "Eliminar un equipo de la base de datos. (Solo personal autorizado)",
                     name: "eliminar_team",
-                    options: [
-                        { type: ChoiceType.STRING, name: "id", description: "ID del equipo", required: true }
-                    ]
+                    options: [{ type: ChoiceType.STRING, name: "id", description: "ID del equipo", required: true }]
                 },
                 {
                     type: ChoiceType.SUB_COMMAND,
@@ -64,8 +59,8 @@ class Help extends Command {
                         { type: ChoiceType.STRING, name: "type", description: "Tipo del equipo (counters o presets)", required: true, autocomplete: true },
                         { type: ChoiceType.STRING, name: "leader", description: "Lider del grupo", required: true, autocomplete: true },
                         { type: ChoiceType.STRING, name: "member2", description: "Segundo miembro", required: true, autocomplete: true },
-                        { type: ChoiceType.STRING, name: "member3", description: "Tercer miembro",  required: true, autocomplete: true },
-                        { type: ChoiceType.STRING, name: "member4", description: "Cuarto miembro",  required: true, autocomplete: true },
+                        { type: ChoiceType.STRING, name: "member3", description: "Tercer miembro", required: true, autocomplete: true },
+                        { type: ChoiceType.STRING, name: "member4", description: "Cuarto miembro", required: true, autocomplete: true },
                         { type: ChoiceType.ATTACHMENT, name: "screenshot", description: "Imagen de registro de batalla con victoria", required: true },
                         { type: ChoiceType.STRING, name: "author", description: "Nombre del autor de la imagen" }
                     ]
@@ -74,9 +69,7 @@ class Help extends Command {
                     type: ChoiceType.SUB_COMMAND,
                     description: "Ver un equipo con su ID.",
                     name: "ver_equipo",
-                    options: [
-                        { type: ChoiceType.STRING, name: "id", description: "ID del equipo", required: true }
-                    ]
+                    options: [{ type: ChoiceType.STRING, name: "id", description: "ID del equipo", required: true }]
                 },
                 {
                     type: ChoiceType.SUB_COMMAND,
@@ -101,11 +94,11 @@ class Help extends Command {
         const gamemode = TeamGameMode.COLOSSEUM;
         const isAdmin = interaction.user.id === Deno.env.get("ADMIN_ID");
 
-        if(!data[0]) return;
+        if (!data[0]) return;
 
         if (interaction.options.data[0].name === "counters") {
             await this.subcommandUtil.runTeam(client, interaction, handler, TeamType.COUNTERS, gamemode);
-        } else if(interaction.options.data[0].name === "presets") {
+        } else if (interaction.options.data[0].name === "presets") {
             await this.subcommandUtil.runTeam(client, interaction, handler, TeamType.PRESET, gamemode);
         }
         else if (interaction.options.data[0].name === "crear_equipo") {
@@ -120,16 +113,16 @@ class Help extends Command {
             } else {
                 await interaction.reply({ content: ":x: No tienes permisos para añadir capturas", ephemeral: true });
             }
-        } 
-        else if(interaction.options.data[0].name === "eliminar_team") {
-            if(isAdmin) {
+        }
+        else if (interaction.options.data[0].name === "eliminar_team") {
+            if (isAdmin) {
                 await this.subcommandUtil.deleteTeamSubcommand(client, interaction, handler, TeamGameMode.COLOSSEUM)
             }
-        } else if(interaction.options.data[0].name === "eliminar_captura") {
+        } else if (interaction.options.data[0].name === "eliminar_captura") {
             await interaction.reply({ content: ":x: No se ha implementado la opción de eliminar capturas" });
-        } else if(interaction.options.data[0].name === "ver_equipo") {
+        } else if (interaction.options.data[0].name === "ver_equipo") {
             await this.subcommandUtil.verEquipoSubcommand(client, interaction, handler, TeamGameMode.COLOSSEUM);
-        } else if(interaction.options.data[0].name === "listar") {
+        } else if (interaction.options.data[0].name === "listar") {
 
             await this.subcommandUtil.listarSubcommand(client, interaction, handler, TeamGameMode.COLOSSEUM);
         }
