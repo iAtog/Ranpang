@@ -1,10 +1,9 @@
 import Bot from "./class/DiscordBot.ts";
-import { Client, CommandInteraction, GatewayIntentBits, AutocompleteInteraction, ButtonInteraction } from "npm:discord.js@14.16.3";
+import { Client, CommandInteraction, GatewayIntentBits, AutocompleteInteraction, ButtonInteraction, ActivityType } from "npm:discord.js@14.16.3";
 import { expandGlob } from "https://deno.land/std@0.224.0/fs/expand_glob.ts";
 import { REST } from 'npm:@discordjs/rest';
 import { Routes } from 'npm:discord-api-types/v9';
 import {Command} from "./class/Command.ts";
-import { Database, DatabaseName, loadDatabase } from "./lib/db/mod.ts"; 
 
 class Ranpang extends Bot {
     public cmds: string[] = [];
@@ -22,6 +21,10 @@ class Ranpang extends Bot {
     public override onLoad(): void {
         console.log("Bot loaded as " + this.client.user?.username + "#" + this.client.user?.discriminator);
         console.log("Currently connected to '" + this.database.databaseName() + "' database");
+
+        this.client.user?.setPresence({
+            activities: [{ name: `Heavenhold`, type: ActivityType.Watching }]
+          });
     }
 
     public override async loadCommands(): Promise<void> {
