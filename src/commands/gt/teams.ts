@@ -132,12 +132,12 @@ class Help extends Command {
             await this.subcommandUtil.listarSubcommand(client, interaction, handler, TeamGameMode.COLOSSEUM);
         } else if(interaction.options.data[0].name === "info") {
             const embed = new Embed()
-            .setDescription("Este comando tiene la finalidad de crear equipos para el modo de juego **Coliseo** de **Guardian Tales**.\n\nLa IA al ser impredecible a veces puedes llegar a perder con un equipo con el que supuestamente ibas a ganar, pero todo depende de la suerte!\n\nEl objetivo es mostrar posisiconamiento porque siempre varían, así puedes formar el tuyo a base de el posicionamiento que alguien ganó teniendo en cuenta las imágenes.\n\nEspero que gane todas sus batallas " + interaction.user.displayName + ", nos vemos. :wave:")
+            .setDescription("Este comando tiene la finalidad de crear equipos para el modo de juego **Coliseo** de **Guardian Tales**.\n\nLa IA al ser impredecible a veces puedes llegar a perder con un equipo con el que supuestamente ibas a ganar, pero todo depende de la suerte!\n\nEl objetivo es mostrar posicionamiento porque siempre varían, así puedes formar el tuyo a base de el posicionamiento que alguien ganó teniendo en cuenta las imágenes.\n\nEspero que gane todas sus batallas " + interaction.user.displayName + ", nos vemos. :wave:")
             .setFooter({ text: interaction.user.username, iconURL: !interaction.user.avatarURL()! ? "https://i.pinimg.com/originals/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg" : interaction.user.avatarURL()!})
             .setThumbnail("https://r2.e-z.host/a992a427-74c5-45d9-8edb-61722d83e2b4/ch84t1vn.png")
             .setColor(0xe30e4a)
             .setTitle("Información del comando: __/coliseo__")
-            await interaction.reply({embeds: [embed]})
+            await interaction.reply({embeds: [embed], ephemeral: true})
         }
     }
 
