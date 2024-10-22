@@ -54,6 +54,7 @@ class SubcommandUtil {
         const type = interaction.options.get("type")?.value?.toString();
         const screenshot = interaction.options.get("screenshot")?.attachment?.url;
         const screenshots: Screenshot[] = [];
+        const author = interaction.options.get("author")?.value?.toString();
 
         await interaction.reply({ content: "<a:loading:1296272884955877427> Iniciando creación de equipo..." });
 
@@ -87,12 +88,13 @@ class SubcommandUtil {
             await interaction.editReply({ content: "<a:loading:1296272884955877427> Subiendo imagen al host..." });
             const hostedUrl = await ezApi.createUrl(screenshot);
             if (hostedUrl) {
+                const auth = !author ? interaction.user.username : author;
                 screenshots.push({
-                    author: interaction.user.username,
+                    author: auth,
                     url: hostedUrl
                 });
             } else {
-                await interaction.editReply({ content: "Error: No se pudo crear la imagen de registro de batalla" });
+                await interaction.editReply({ content: "Error: No se pudo hostear la imagen. :warning:" });
                 return;
             }
         }
@@ -124,9 +126,9 @@ class SubcommandUtil {
         const screenshot = interaction.options.get("screenshot")?.attachment?.url;
 
         let realType: TeamType;
-        if (type === "counters") {
+        if (type?.toLowerCase() === "counters") {
             realType = TeamType.COUNTERS;
-        } else if (type === "presets") {
+        } else if (type?.toLowerCase() === "preset") {
             realType = TeamType.PRESET;
         } else {
             interaction.editReply({ content: "Error: Tipo de equipo no reconocido" });
@@ -138,7 +140,7 @@ class SubcommandUtil {
         const team = await handler.getTeamByMembers(realType, teamMembers, gamemode);
 
         if (!team || team === undefined || team === null) {
-            await interaction.editReply({ content: ":x: Error: No se encontró el equipo." })
+            await interaction.editReply({ content: ":x: No se encontró el equipo." })
             return;
         }
 
@@ -148,13 +150,14 @@ class SubcommandUtil {
         if (screenshot) {
             await interaction.editReply({ content: "<a:loading:1296272884955877427> Subiendo imagen al host..." });
             const hostedUrl = await ezApi.createUrl(screenshot);
-            if (hostedUrl) {
+            if (hostedUrl && hostedUrl !== "") {
+                const auth = !author ? interaction.user.username : author;
                 screenshots.push({
-                    author: author ?? interaction.user.username,
+                    author: auth,
                     url: hostedUrl
                 });
             } else {
-                await interaction.editReply({ content: "Error: No se pudo subir la imagen al hosting." });
+                await interaction.editReply({ content: ":x: No se pudo subir la imagen al hosting." });
                 return;
             }
         }
@@ -165,7 +168,7 @@ class SubcommandUtil {
         if (response) {
             await interaction.editReply({ content: "✅ Se ha añadido una captura al equipo #`" + team.id + "`." });
         } else {
-            await interaction.editReply({ content: ":x: Error: No se ha podido añadir la captura al equipo." });
+            await interaction.editReply({ content: ":x: No se ha podido añadir la captura al equipo." });
         }
     }
 
