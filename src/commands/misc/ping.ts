@@ -61,7 +61,7 @@ class Help extends Command {
             inline: true
         }, {
             name: "Gremio afiliado",
-            value: "Gremio `VultureSupremacy` en Guardian Tales.",
+            value: "[VultureSupremacy](https://discord.gg/kxfBkDhfQ8) en Guardian Tales.",
             inline: true
         })
         .setFooter({ text: interaction.user.username, iconURL: "https://r2.e-z.host/a992a427-74c5-45d9-8edb-61722d83e2b4/r6taxujw.png" })

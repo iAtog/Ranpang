@@ -223,10 +223,9 @@ class TeamsHandler {
         return new Promise<Team>((resolve, _reject) => {
             this.database.getAll().then(async (teams) => {
                 for await (const team of teams) {
-                    if (team.type !== type.toString()) {
-                        console.log("type dont match");
+                    if (team.type !== type.toString()) 
                         continue;
-                    }
+                    
                     //console.log(team.gamemode.toString().toUpperCase(), gamemode.toString());
                     if(team.gamemode.toString().toUpperCase() !== gamemode.toString().toUpperCase()) continue;
                     if (team.members.length !== members.length) continue;
