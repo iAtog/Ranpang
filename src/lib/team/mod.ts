@@ -1,6 +1,5 @@
 import { Database } from "../db/mod.ts";
-import { Embed, ButtonComponent, ActionRowComponent } from "npm:@notenoughupdates/discord.js-builders";
-import { ButtonBuilder,  ActionRowBuilder } from "npm:discord.js";
+import { Embed } from "npm:@notenoughupdates/discord.js-builders";
 import { PaginatedEmbed } from "../embedpaginator/mod.ts";
 
 class TeamsHandler {
