@@ -9,7 +9,7 @@ class CMD extends Command {
 
     constructor() {
         super({
-            name: "hero",
+            name: "heroe",
             description: "Get heroe by name",
             choices: [
                 {
