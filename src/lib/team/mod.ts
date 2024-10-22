@@ -87,6 +87,7 @@ class TeamsHandler {
             value: this.translateGamemode(team.gamemode),
             inline: true
         });
+
         if (team.screenshots.length > 0) {
             embed.setImage(team.screenshots[0].url);
         } else {
@@ -104,14 +105,17 @@ class TeamsHandler {
         }
 
         const embed = new PaginatedEmbed({
-            itemsPerPage: 4,
+            itemsPerPage: 6,
             paginationType: "field",
             showFirstLastBtns: false,
             nextBtn: "➡",
-            prevBtn: "⬅"
+            prevBtn: "⬅",
+            duration: (60 * 1000),
         })
         .setFields(fields)
-        .setTitles(this.duplicateValue("Lista de equipos para " + this.translateGamemode(gamemode).toLowerCase(), teams.length))
+        .setTimestamp(Date.now())
+        .setColours(this.duplicateValue('Aqua', teams.length))
+        .setDescriptions(["# Lista de equipos para " + this.translateGamemode(gamemode).toLowerCase()])
         .setFooters(this.duplicateValue({ text: "{page}" }, teams.length))
 
         return embed;
@@ -137,30 +141,37 @@ class TeamsHandler {
                 message += " :crown:";
             }
             members.push(message);
-        }
-        const descriptions = this.duplicateValue(team.description, pages, team.screenshots.map(screenshot => (`\n\n> Imagen subida por: **${screenshot.author}**`)));
+        }// \nFecha de creación: ${team.createdAt.toLocaleString()}
+        const descriptions = this.duplicateValue(`## Equipo **\`${team.id}\`** (${this.mayus(team.type.toLowerCase())})\n\n${team.description}`, pages, team.screenshots.map(screenshot => (`\n\n> Imagen subida por: **${screenshot.author}**`)));
         //console.log("Descriptions: ", descriptions);
+        
+        const fields = [{ 
+            name: "# Miembros", 
+            value: members.join('\n'), 
+            inline: true 
+        }, {
+            name: "# Modo de juego",
+            value: this.translateGamemode(team.gamemode),
+            inline: true
+        }];
+        
         const images = pages > 0 ? team.screenshots.map(screenshot => screenshot.url) : ["https://t3.ftcdn.net/jpg/04/84/88/76/360_F_484887682_Mx57wpHG4lKrPAG0y7Q8Q7bJ952J3TTO.jpg"]
         const embed = new PaginatedEmbed({
             itemsPerPage: 1,
             paginationType: "description",
             showFirstLastBtns: false,
             nextBtn: "➡",
-            prevBtn: "⬅"
+            prevBtn: "⬅",
+            duration: (60 * 1000),
         })
         .setDescriptions(descriptions)
         .setImages(images)
-        .setFields([{ 
-            name: "Miembros", 
-            value: members.join('\n'), 
-            inline: true 
-        }, {
-            name: "Modo de juego",
-            value: this.translateGamemode(team.gamemode),
-            inline: true
-        }])
-        .setTitles(this.duplicateValue("Equipo #``" + team.id + "`` (" + this.mayus(team.type.toLowerCase()) + ")", pages))
-        .setFooters(this.duplicateValue({ text: "{page}" }, pages))
+        .setFields(fields)
+        .setColours(this.duplicateValue("Gold", pages))
+        .setTimestamp(team.createdAt)
+        //.setAuthors(this.duplicateValue({ name: "Equipo '" + team.id + "' (" + this.mayus(team.type.toLowerCase()) + ")", iconURL: "https://r2.e-z.host/a992a427-74c5-45d9-8edb-61722d83e2b4/r6taxujw.png" }, pages))
+        //.setTitles(this.duplicateValue("Equipo #``" + team.id + "`` (" + this.mayus(team.type.toLowerCase()) + ")", pages))
+        .setFooters(this.duplicateValue({ text: `${team.id} | {page}` }, pages))
 
         return embed;
     }
@@ -227,7 +238,7 @@ class TeamsHandler {
 
                     if (companions1.size !== companions2.size)
                         continue;
-                    
+        
 
                     let isEqual = true;
 
@@ -341,7 +352,7 @@ class TeamsHandler {
 }
 
 function createTeamId(): string {
-    const abc = "abcdef0123456789";
+    const abc = "abcdefghijkmnopqrstuvwxyz0123456789";
     let id = "";
     for (let i = 0; i < 8; i++) {
         id += abc[Math.floor(Math.random() * abc.length)];

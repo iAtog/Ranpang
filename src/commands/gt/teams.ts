@@ -81,7 +81,10 @@ class Help extends Command {
                 {
                     type: ChoiceType.SUB_COMMAND,
                     description: "Ver una lista de los equipos registrados.",
-                    name: "listar" // LISTAR POR FIELDS
+                    name: "listar", // LISTAR POR FIELDS
+                    /*options: [
+                        { type: ChoiceType.STRING, name: "type", description: "Tipo del equipo (counters o presets)", autocomplete: true }
+                    ]*/
                 }
             ]
         });
@@ -127,6 +130,7 @@ class Help extends Command {
         } else if(interaction.options.data[0].name === "ver_equipo") {
             await this.subcommandUtil.verEquipoSubcommand(client, interaction, handler, TeamGameMode.COLOSSEUM);
         } else if(interaction.options.data[0].name === "listar") {
+
             await this.subcommandUtil.listarSubcommand(client, interaction, handler, TeamGameMode.COLOSSEUM);
         }
     }
