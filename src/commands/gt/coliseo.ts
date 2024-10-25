@@ -68,6 +68,16 @@ class Help extends Command {
                 },
                 {
                     type: ChoiceType.SUB_COMMAND,
+                    description: "Añadir una captura a un equipo usando su ID.",
+                    name: "añadir_captura_id",
+                    options: [
+                        { type: ChoiceType.STRING, name: "id", description: "ID del equipo", required: true },
+                        { type: ChoiceType.ATTACHMENT, name: "screenshot", description: "Imagen a subir.", required: true },
+                        { type: ChoiceType.STRING, name: "author", description: "Nombre del autor de la imagen" }
+                    ]
+                },
+                {
+                    type: ChoiceType.SUB_COMMAND,
                     description: "Ver un equipo con su ID.",
                     name: "ver_equipo",
                     options: [{ type: ChoiceType.STRING, name: "id", description: "ID del equipo", required: true }]
@@ -138,6 +148,10 @@ class Help extends Command {
             .setColor(0xe30e4a)
             .setTitle("Información del comando: __/coliseo__")
             await interaction.reply({embeds: [embed], ephemeral: true})
+        } else if(interaction.options.data[0].name === "añadir_captura_id") {
+            if (isAdmin) {
+                await this.subcommandUtil.addScreenshotWithIDSubcommand(client, interaction, handler);
+            }
         }
     }
 

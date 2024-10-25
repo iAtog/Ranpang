@@ -172,6 +172,56 @@ class SubcommandUtil {
         }
     }
 
+    public async addScreenshotWithIDSubcommand(client: Client, interaction: CommandInteraction, handler: TeamsHandler) {
+        const counter = interaction.options.data[0].options;
+        const ezApi = client.ez_api as EZ_Host;
+
+        if (!counter) {
+            await interaction.reply({ content: "Error: No se encontró el grupo" });
+            return;
+        };
+
+        await interaction.reply({ content: "<a:loading:1296272884955877427> Consultando la base de datos..." })
+        const id = interaction.options.get("id")?.value?.toString();
+        const author = interaction.options.get("author")?.value?.toString();
+        const screenshot = interaction.options.get("screenshot")?.attachment?.url;
+
+        await interaction.editReply({ content: "<a:loading:1296272884955877427> Creando instancia de equipo..." })
+        const team = await handler.getTeam(id!);
+
+        if (!team || team === undefined || team === null) {
+            await interaction.editReply({ content: ":x: No se encontró el equipo." })
+            return;
+        }
+
+        await interaction.editReply({ content: "<a:loading:1296272884955877427> ¡Equipo #`" + team.id + "` encontrado!" })
+        const database = interaction.client.database as Database;
+        const screenshots: Screenshot[] = [...team.screenshots];
+        if (screenshot) {
+            await interaction.editReply({ content: "<a:loading:1296272884955877427> Subiendo imagen al host..." });
+            const hostedUrl = await ezApi.createUrl(screenshot);
+            if (hostedUrl && hostedUrl !== "") {
+                const auth = !author ? interaction.user.username : author;
+                screenshots.push({
+                    author: auth,
+                    url: hostedUrl
+                });
+            } else {
+                await interaction.editReply({ content: ":x: No se pudo subir la imagen al hosting." });
+                return;
+            }
+        }
+
+        team.screenshots = screenshots;
+        const response = await database.update(team.id, team);
+
+        if (response) {
+            await interaction.editReply({ content: "✅ Se ha añadido una captura al equipo #`" + team.id + "`." });
+        } else {
+            await interaction.editReply({ content: ":x: No se ha podido añadir la captura al equipo." });
+        }
+    }
+
     public async deleteTeamSubcommand(client: Client, interaction: CommandInteraction, handler: TeamsHandler, gamemode: TeamGameMode) {
         const counter = interaction.options.data[0].options;
         if (!counter) {
