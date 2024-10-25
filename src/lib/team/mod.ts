@@ -145,11 +145,11 @@ class TeamsHandler {
         //console.log("Descriptions: ", descriptions);
         
         const fields = [{ 
-            name: "# Miembros", 
+            name: "Miembros", 
             value: members.join('\n'), 
             inline: true 
         }, {
-            name: "# Modo de juego",
+            name: "Modo de juego",
             value: this.translateGamemode(team.gamemode),
             inline: true
         }];
