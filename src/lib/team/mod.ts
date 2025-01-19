@@ -141,7 +141,8 @@ class TeamsHandler {
             }
             members.push(message);
         }// \nFecha de creación: ${team.createdAt.toLocaleString()}
-        const descriptions = this.duplicateValue(`## Equipo **\`${team.id}\`** (${this.mayus(team.type.toLowerCase())})\n\n${team.description}`, pages, team.screenshots.map(screenshot => (`\n\n> Imagen subida por: **${screenshot.author}**`)));
+        const descriptions = this.duplicateValue(`## Equipo **\`${team.id}\`** (${this.mayus(team.type.toLowerCase())})\n\n`+
+                `${team.description}`, pages, team.screenshots.map(screenshot => (`\n\n> Imagen subida por: **${screenshot.author}**\n Id de la captura: \`${screenshot.id}\``)));
         //console.log("Descriptions: ", descriptions);
         
         const fields = [{ 
@@ -375,6 +376,7 @@ interface Team {
 }
 
 interface Screenshot {
+    id: string;
     author: string;
     url: string;
 }

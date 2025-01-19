@@ -48,12 +48,6 @@ class Help extends Command {
                 },
                 {
                     type: ChoiceType.SUB_COMMAND,
-                    description: "Eliminar un equipo de la base de datos. (Solo personal autorizado)",
-                    name: "eliminar_team",
-                    options: [{ type: ChoiceType.STRING, name: "id", description: "ID del equipo", required: true }]
-                },
-                {
-                    type: ChoiceType.SUB_COMMAND,
                     description: "Añadir una captura a un equipo (ya sea presets o counters)",
                     name: "añadir_captura",
                     options: [
@@ -92,6 +86,20 @@ class Help extends Command {
                 },
                 {
                     type: ChoiceType.SUB_COMMAND,
+                    description: "Eliminar una captura de un equipo registrado.",
+                    name: "borrar_captura",
+                    options: [
+                        { type: ChoiceType.STRING, name: "id", description: "ID del equipo", required: true },
+                        { type: ChoiceType.STRING, name: "screenshot", description: "ID de la captura", required: true }
+                    ]
+                },
+                /*{
+                    type: ChoiceType.SUB_COMMAND,
+                    description: "Actualizar IDS",
+                    name: "actualizar_ids",
+                },*/
+                {
+                    type: ChoiceType.SUB_COMMAND,
                     description: "Información sobre el comando.",
                     name: "info"
                 }
@@ -108,7 +116,7 @@ class Help extends Command {
         const handler = (client.teams) as TeamsHandler;
         const data = interaction.options.data;
         const gamemode = TeamGameMode.COLOSSEUM;
-        const isAdmin = interaction.user.id === Deno.env.get("ADMIN_ID");
+        const isAdmin = await this.subcommandUtil.hasPermission(interaction);
 
         if (!data[0]) return;
 
@@ -133,16 +141,16 @@ class Help extends Command {
         else if (interaction.options.data[0].name === "eliminar_team") {
             if (isAdmin) {
                 await this.subcommandUtil.deleteTeamSubcommand(client, interaction, handler, TeamGameMode.COLOSSEUM)
+            } else {
+                await this.notAdminMessage(interaction);
             }
-        } else if (interaction.options.data[0].name === "eliminar_captura") {
-            await interaction.reply({ content: ":x: No se ha implementado la opción de eliminar capturas" });
         } else if (interaction.options.data[0].name === "ver_equipo") {
             await this.subcommandUtil.verEquipoSubcommand(client, interaction, handler, TeamGameMode.COLOSSEUM);
         } else if (interaction.options.data[0].name === "listar") {
             await this.subcommandUtil.listarSubcommand(client, interaction, handler, TeamGameMode.COLOSSEUM);
         } else if(interaction.options.data[0].name === "info") {
             const embed = new Embed()
-            .setDescription("Este comando tiene la finalidad de crear equipos para el modo de juego **Coliseo** de **Guardian Tales**.\n\nLa IA al ser impredecible a veces puedes llegar a perder con un equipo con el que supuestamente ibas a ganar, pero todo depende de la suerte!\n\nEl objetivo es mostrar posicionamiento porque siempre varían, así puedes formar el tuyo a base de el posicionamiento que alguien ganó teniendo en cuenta las imágenes.\n\nEspero que gane todas sus batallas " + interaction.user.displayName + ", nos vemos. :wave:")
+            .setDescription("Este bot tiene la finalidad de crear una guía ya sean de presets o counters para coliseo en **Guardian Tales**.\n\nSi algun contenido que te haya mostrado el bot no te funciona, no te preocupes, puedes reintentarlo!\n\nEspero que ganes todas sus batallas, " + interaction.user.displayName + ", nos vemos. :wave:")
             .setFooter({ text: interaction.user.username, iconURL: !interaction.user.avatarURL()! ? "https://i.pinimg.com/originals/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg" : interaction.user.avatarURL()!})
             .setThumbnail("https://r2.e-z.host/a992a427-74c5-45d9-8edb-61722d83e2b4/ch84t1vn.png")
             .setColor(0xe30e4a)
@@ -151,6 +159,20 @@ class Help extends Command {
         } else if(interaction.options.data[0].name === "añadir_captura_id") {
             if (isAdmin) {
                 await this.subcommandUtil.addScreenshotWithIDSubcommand(client, interaction, handler);
+            } else {
+                await this.notAdminMessage(interaction);
+            }
+        } else if(interaction.options.data[0].name === "borrar_captura") {
+            if(isAdmin) {
+                await this.subcommandUtil.borrarCapturaSubcommand(client, interaction, handler, TeamGameMode.COLOSSEUM);
+            } else {
+                await this.notAdminMessage(interaction);
+            }
+        } else if(interaction.options.data[0].name === "actualizar_ids") {
+            if(isAdmin) {
+                await this.subcommandUtil.actualizarIDs(client, interaction, handler);
+            } else {
+                await this.notAdminMessage(interaction);
             }
         }
     }
@@ -165,6 +187,15 @@ class Help extends Command {
             return;
         }
         await this.heroAutocomplete(interaction, interaction.client.teams.TwoStarHeros());
+    }
+
+    public async notAdminMessage(interaction: CommandInteraction) {
+        const embed = new Embed()
+        .setDescription(`:x: No tienes permisos para usar este comando.`)
+        .setFooter({ text: "Ranpang", iconURL: "https://r2.e-z.host/a992a427-74c5-45d9-8edb-61722d83e2b4/r6taxujw.png" })
+        .setColor(0xe30e4a)
+
+        await interaction.reply({ embeds: [embed], ephemeral: true });
     }
 }
 

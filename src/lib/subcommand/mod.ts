@@ -1,11 +1,45 @@
-import { Command, ChoiceType } from "../../class/Command.ts";
+//import { Command, ChoiceType } from "../../class/Command.ts";
 import { Client, CommandInteraction, AutocompleteInteraction } from "npm:discord.js";
-import { Embed } from "npm:@notenoughupdates/discord.js-builders";
 import { TeamGameMode, TeamsHandler, TeamType, type Screenshot } from "../../lib/team/mod.ts";
 import EZ_Host from "../../lib/e-z_host/mod.ts";
 import { Database } from "../../lib/db/mod.ts";
 
 class SubcommandUtil {
+
+    public async hasPermission(interaction: CommandInteraction) {
+        const isAdmin = interaction.user.id === Deno.env.get("ADMIN_ID");
+        const file = JSON.parse(await Deno.readTextFileSync("./local/permisos.json"));
+
+        if(file.includes(interaction.user.id) || isAdmin) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public async actualizarIDs(client: Client, interaction: CommandInteraction, handler: TeamsHandler) {
+        const teams = await handler.getTeams();
+
+        for await (const team of teams) {
+            const database = client.database as Database;
+            const screenshots: Screenshot[] = [];
+
+            for await (const screenshot of team.screenshots) {
+                screenshots.push({
+                    id: (screenshot.id == undefined || !screenshot.id) ? this.generateRandomId() : screenshot.id,
+                    author: screenshot.author,
+                    url: screenshot.url
+                });
+            }
+
+            team.screenshots = screenshots;
+            
+            await database.update(team.id, team);
+        }
+
+        await interaction.reply({ content: "✅ IDs actualizados.", ephemeral: true });
+    }
+
     public async runTeam(client: Client, interaction: CommandInteraction, handler: TeamsHandler, type: TeamType, gamemode: TeamGameMode) {
         const options = interaction.options.data[0].options;
         if (!options) {
@@ -26,9 +60,6 @@ class SubcommandUtil {
             interaction.editReply({ content: ":x: Error: No se encontró el equipo." })
             return;
         }
-
-        //const embed = handler.createTeamEmbed(team);
-        //const rows = handler.getScrollButtons() as any;
 
         await interaction.deleteReply();
 
@@ -54,7 +85,7 @@ class SubcommandUtil {
         const type = interaction.options.get("type")?.value?.toString();
         const screenshot = interaction.options.get("screenshot")?.attachment?.url;
         const screenshots: Screenshot[] = [];
-        const author = interaction.options.get("author")?.value?.toString();
+        const author = interaction.options.get("author")?.value?.toString().trim();
 
         await interaction.reply({ content: "<a:loading:1296272884955877427> Iniciando creación de equipo..." });
 
@@ -91,7 +122,8 @@ class SubcommandUtil {
                 const auth = !author ? interaction.user.username : author;
                 screenshots.push({
                     author: auth,
-                    url: hostedUrl
+                    url: hostedUrl,
+                    id: this.generateRandomId()
                 });
             } else {
                 await interaction.editReply({ content: "Error: No se pudo hostear la imagen. :warning:" });
@@ -102,7 +134,7 @@ class SubcommandUtil {
         const success = await teamsHandler.addTeam(newTeam);
         if (success) {
             const embed = await teamsHandler.createTeamEmbed(newTeam);
-            await interaction.editReply({ content: "✅ Equipo registrado con éxito. ID: `" + newTeam.id + "`", embeds: [embed] });
+            await interaction.editReply({ content: "✅ Equipo registrado con éxito. ID: `#" + newTeam.id + "`", embeds: [embed] });
         } else {
             await interaction.editReply({ content: ":x: Error: No se pudo registrar el equipo" });
         }
@@ -121,7 +153,7 @@ class SubcommandUtil {
         const member2 = interaction.options.get("member2")?.value?.toString();
         const member3 = interaction.options.get("member3")?.value?.toString();
         const member4 = interaction.options.get("member4")?.value?.toString();
-        const author = interaction.options.get("author")?.value?.toString();
+        const author = interaction.options.get("author")?.value?.toString().trim();
         const type = interaction.options.get("type")?.value?.toString();
         const screenshot = interaction.options.get("screenshot")?.attachment?.url;
 
@@ -144,9 +176,10 @@ class SubcommandUtil {
             return;
         }
 
-        await interaction.editReply({ content: "<a:loading:1296272884955877427> ¡Equipo #`" + team.id + "` encontrado!" })
+        await interaction.editReply({ content: "<a:loading:1296272884955877427> ¡Equipo `#" + team.id + "` encontrado!" })
         const database = interaction.client.database as Database;
         const screenshots: Screenshot[] = [...team.screenshots];
+
         if (screenshot) {
             await interaction.editReply({ content: "<a:loading:1296272884955877427> Subiendo imagen al host..." });
             const hostedUrl = await ezApi.createUrl(screenshot);
@@ -154,7 +187,8 @@ class SubcommandUtil {
                 const auth = !author ? interaction.user.username : author;
                 screenshots.push({
                     author: auth,
-                    url: hostedUrl
+                    url: hostedUrl,
+                    id: this.generateRandomId()
                 });
             } else {
                 await interaction.editReply({ content: ":x: No se pudo subir la imagen al hosting." });
@@ -166,7 +200,7 @@ class SubcommandUtil {
         const response = await database.update(team.id, team);
 
         if (response) {
-            await interaction.editReply({ content: "✅ Se ha añadido una captura al equipo #`" + team.id + "`." });
+            await interaction.editReply({ content: "✅ Se ha añadido una captura al equipo `#" + team.id + "`." });
         } else {
             await interaction.editReply({ content: ":x: No se ha podido añadir la captura al equipo." });
         }
@@ -182,8 +216,13 @@ class SubcommandUtil {
         };
 
         await interaction.reply({ content: "<a:loading:1296272884955877427> Consultando la base de datos..." })
-        const id = interaction.options.get("id")?.value?.toString();
-        const author = interaction.options.get("author")?.value?.toString();
+        let id = interaction.options.get("id")?.value?.toString().trim();
+
+        if(id?.startsWith("#")) {
+            id = id.substring(1);
+        }
+
+        const author = interaction.options.get("author")?.value?.toString().trim();
         const screenshot = interaction.options.get("screenshot")?.attachment?.url;
 
         await interaction.editReply({ content: "<a:loading:1296272884955877427> Creando instancia de equipo..." })
@@ -194,7 +233,7 @@ class SubcommandUtil {
             return;
         }
 
-        await interaction.editReply({ content: "<a:loading:1296272884955877427> ¡Equipo #`" + team.id + "` encontrado!" })
+        await interaction.editReply({ content: "<a:loading:1296272884955877427> ¡Equipo `#" + team.id + "` encontrado!" })
         const database = interaction.client.database as Database;
         const screenshots: Screenshot[] = [...team.screenshots];
         if (screenshot) {
@@ -204,7 +243,8 @@ class SubcommandUtil {
                 const auth = !author ? interaction.user.username : author;
                 screenshots.push({
                     author: auth,
-                    url: hostedUrl
+                    url: hostedUrl,
+                    id: this.generateRandomId()
                 });
             } else {
                 await interaction.editReply({ content: ":x: No se pudo subir la imagen al hosting." });
@@ -216,7 +256,7 @@ class SubcommandUtil {
         const response = await database.update(team.id, team);
 
         if (response) {
-            await interaction.editReply({ content: "✅ Se ha añadido una captura al equipo #`" + team.id + "`." });
+            await interaction.editReply({ content: "✅ Se ha añadido una captura al equipo `#" + team.id + "`." });
         } else {
             await interaction.editReply({ content: ":x: No se ha podido añadir la captura al equipo." });
         }
@@ -229,7 +269,11 @@ class SubcommandUtil {
             return;
         };
         await interaction.reply({ content: "<a:loading:1296272884955877427> Consultando la base de datos..." })
-        const id = interaction.options.get("id")?.value?.toString();
+        let id = interaction.options.get("id")?.value?.toString().trim();
+
+        if(id?.startsWith("#")) {
+            id = id.substring(1);
+        }
 
         await interaction.editReply({ content: "<a:loading:1296272884955877427> Creando instancia de equipo..." })
         const team = await handler.getTeam(id!);
@@ -239,11 +283,11 @@ class SubcommandUtil {
             return;
         }
 
-        await interaction.editReply({ content: "<a:loading:1296272884955877427> ¡Equipo #`" + team.id + "` encontrado!" })
+        await interaction.editReply({ content: "<a:loading:1296272884955877427> ¡Equipo `#" + team.id + "` encontrado!" })
         const database = interaction.client.database as Database;
 
         await database.remove(team.id);
-        await interaction.editReply({ content: "✅ Se ha eliminado el equipo #`" + team.id + "`." });
+        await interaction.editReply({ content: "✅ Se ha eliminado el equipo `#" + team.id + "`." });
     }
 
     public async verEquipoSubcommand(client: Client, interaction: CommandInteraction, handler: TeamsHandler, gamemode: TeamGameMode) {
@@ -252,8 +296,13 @@ class SubcommandUtil {
             await interaction.reply({ content: "Error: No se encontró el grupo" });
             return;
         };
+
         await interaction.reply({ content: "<a:loading:1296272884955877427> Consultando la base de datos..." })
-        const id = interaction.options.get("id")?.value?.toString();
+        let id = interaction.options.get("id")?.value?.toString();
+
+        if(id?.startsWith("#")) {
+            id = id.substring(1);
+        }
 
         await interaction.editReply({ content: "<a:loading:1296272884955877427> Creando instancia de equipo..." })
         const team = await handler.getTeam(id!);
@@ -269,7 +318,7 @@ class SubcommandUtil {
         const paginatedEmbed = await handler.createTeamEmbedPaginated(team);
 
         await paginatedEmbed.send({
-            message: `<@${interaction.user.id}> has consultado el equipo #\`${team.id}\``,
+            message: `<@${interaction.user.id}> has consultado el equipo \`#${team.id}\``,
             options: {
                 channel
             }
@@ -299,6 +348,74 @@ class SubcommandUtil {
                 channel
             }
         })
+    }
+
+    public async borrarCapturaSubcommand(client: Client, interaction: CommandInteraction, handler: TeamsHandler, gamemode: TeamGameMode) {
+        const counter = interaction.options.data[0].options;
+        if (!counter) {
+            await interaction.reply({ content: "Error: No se encontró el grupo" });
+            return;
+        };
+
+        await interaction.reply({ content: "<a:loading:1296272884955877427> Consultando la base de datos..." })
+        let id = interaction.options.get("id")?.value?.toString().trim();
+        let screenshotID = interaction.options.get("screenshot")?.value?.toString().trim();
+
+        if(id?.startsWith("#")) {
+            id = id.substring(1);
+        }
+
+        if(screenshotID?.startsWith("#")) {
+            screenshotID = screenshotID.substring(1);
+        }
+
+        await interaction.editReply({ content: "<a:loading:1296272884955877427> Consultado el equipo #`" + id + "`" })
+        const team = await handler.getTeam(id!);
+
+        if (!team || team === undefined || team === null) {
+            await interaction.editReply({ content: ":x: No se encontró el equipo." })
+            return;
+        }
+
+        await interaction.editReply({ content: "<a:loading:1296272884955877427> ¡Equipo `#" + team.id + "` encontrado!" })
+        const database = interaction.client.database as Database;
+        const screenshots: Screenshot[] = [];
+
+        if(team.screenshots.length === 0) {
+            await interaction.editReply({ content: ":x: No hay capturas para eliminar." })
+            return;
+        }
+
+        for await (const screenshot of team.screenshots) {
+            if(screenshot.id !== screenshotID) {
+                screenshots.push(screenshot);
+            }
+        }
+
+        if(screenshots.length === team.screenshots.length) {
+            await interaction.editReply({ content: ":x: No se encontró la captura." })
+            return;
+        }
+
+        team.screenshots = screenshots;
+        const response = await database.update(team.id, team);
+
+        if (response) {
+            await interaction.editReply({ content: "✅ Se ha eliminado la captura al equipo #`" + team.id + "`." });
+        } else {
+            await interaction.editReply({ content: ":x: No se ha podido eliminar la captura al equipo." });
+        }
+
+    }
+
+    private generateRandomId(): string {
+        const abc = "abcdefghijkmnopqrstuvwxyz0123456789";
+        let id = "";
+        for (let i = 0; i < 8; i++) {
+            id += abc[Math.floor(Math.random() * abc.length)];
+        }
+
+        return id;
     }
 }
 
