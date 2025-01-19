@@ -48,6 +48,12 @@ class Help extends Command {
                 },
                 {
                     type: ChoiceType.SUB_COMMAND,
+                    description: "Eliminar un equipo de la base de datos. (Solo personal autorizado)",
+                    name: "eliminar_equipo",
+                    options: [{ type: ChoiceType.STRING, name: "id", description: "ID del equipo", required: true }]
+                },
+                {
+                    type: ChoiceType.SUB_COMMAND,
                     description: "Añadir una captura a un equipo (ya sea presets o counters)",
                     name: "añadir_captura",
                     options: [
@@ -138,7 +144,7 @@ class Help extends Command {
                 await interaction.reply({ content: ":x: No tienes permisos para añadir capturas", ephemeral: true });
             }
         }
-        else if (interaction.options.data[0].name === "eliminar_team") {
+        else if (interaction.options.data[0].name === "eliminar_equipo") {
             if (isAdmin) {
                 await this.subcommandUtil.deleteTeamSubcommand(client, interaction, handler, TeamGameMode.COLOSSEUM)
             } else {
