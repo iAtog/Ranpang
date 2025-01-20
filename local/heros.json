@@ -453,5 +453,30 @@
         "key": "kai",
         "name": "Kai",
         "emoji": "<:kai:1296974273465810974>"
+    },
+    {
+        "key": "dohwa",
+        "name": "Dohwa",
+        "emoji": "<:doh:1330979002877218888>"
+    },
+    {
+        "key": "tasha",
+        "name": "Tasha",
+        "emoji": "<:tas:1330979374773833901>"
+    },
+    {
+        "key": "stark",
+        "name": "Stark",
+        "emoji": "<:stark:1330979965587558560>"
+    },
+    {
+        "key": "frieren",
+        "name": "Frieren",
+        "emoji": "<:frieren:1330980013813661827>"
+    },
+    {
+        "key": "fern",
+        "name": "Fern",
+        "emoji": "<:fern:1330980041550729357>"
     }
 ]
