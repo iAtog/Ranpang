@@ -1,9 +1,11 @@
 {
+  "nodeModulesDir": "auto",
   "tasks": {
     "bot": "deno run -A --quiet src/mod.ts"
   },
   "imports": {
     "@std/assert": "jsr:@std/assert@1",
+    "canvas": "npm:canvas@^3.0.1",
     "embed-paginator": "npm:embed-paginator@^2.0.1"
   },
   "test": {
