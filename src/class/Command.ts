@@ -1,15 +1,12 @@
 // deno-lint-ignore-file
 import { CommandInteraction, Client, AutocompleteInteraction } from "npm:discord.js";
 import { TeamsHandler, TeamGameMode, TeamType } from "../lib/team/mod.ts";
-import { SubcommandUtil } from "../lib/subcommand/mod.ts";
 
 abstract class Command {
     public settings: CommandSettings;
-    public subcommandUtil: SubcommandUtil;
-
+    
     constructor(settings: CommandSettings) {
         this.settings = settings;
-        this.subcommandUtil = new SubcommandUtil();
     }
 
     public abstract run(client: Client, interaction: CommandInteraction): void;
@@ -38,15 +35,9 @@ abstract class Command {
 
     public async heroAutocomplete(interaction: AutocompleteInteraction, blacklist = []): Promise<void> {
         const focused = interaction.options.getFocused();
-        /*const response = await fetch("https://www.gtales.top/api/heroes");
-        const data: Heroe[] = await response.json();*/
         const data = await (interaction.client.teams as TeamsHandler).getCustomHeros();
         const blacklistedKeys: string[] = [...blacklist];
-        // heroes 1 estrella
-        //blacklistedKeys.push("linda", "bob", "hyper", "maria", "lisa", "leah", "jay", "dragon", "blade", "mina", "hoshida", "peggy", "ailie", "oralie", "kang", "agatha", "davinci", "kate", "zoe", "rio", "nyan", "martyJunior");
-        //data.push({ name: "Craig", key: "craig" });
         const filtered = data.filter(hero => hero.name.toLowerCase().includes(focused.toLowerCase()) && !blacklistedKeys.includes(hero.key));
-        //const filtered = data.filter(hero => hero.name.toLowerCase().startsWith(focused.toLowerCase()));
         let choices = filtered.map(choice => ({ name: this.mayus(choice.name), value: choice.key }));
         
         if(choices.length > 25) {
@@ -91,8 +82,6 @@ abstract class Command {
     public nonNull(value: any, thing: Function): void {
         if(value !== null) thing()
     }
-
-
 }
 
 enum ChoiceType {

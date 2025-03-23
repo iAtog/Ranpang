@@ -2,8 +2,13 @@ import { Command, ChoiceType } from "../../class/Command.ts";
 import { Client, CommandInteraction, AutocompleteInteraction } from "npm:discord.js";
 import { TeamGameMode, TeamsHandler, TeamType } from "../../lib/team/mod.ts";
 import { Embed } from "npm:@notenoughupdates/discord.js-builders";
+import { SubcommandUtil } from "../../lib/subcommand/mod.ts";
+import { toPathString } from "https://deno.land/std@0.224.0/fs/_to_path_string.ts";
+import ColiseoSubCommand from "../sub/coliseo/mod.ts";
 
-class Help extends Command {
+class Coliseo extends Command {
+    //public subcommandUtil: SubcommandUtil;
+
     constructor() {
         super({
             name: "coliseo",
@@ -113,74 +118,20 @@ class Help extends Command {
         });
     }
 
+    /**
+     * Handle subcommands nicely.
+     * @param client Discord Client
+     * @param interaction CommandInteraction
+     */
     async run(client: Client, interaction: CommandInteraction) {
         if (!client.teams!) {
             await interaction.reply({ content: ":x: Ocurrió un error en la carga de datos, por favor intenta nuevamente", ephemeral: true });
             return;
         }
+        if (!interaction.options.data[0]) return;
+        const subcommands = client.coliseoSubcommands as ColiseoSubCommand;
 
-        const handler = (client.teams) as TeamsHandler;
-        const data = interaction.options.data;
-        const gamemode = TeamGameMode.COLOSSEUM;
-        const isAdmin = await this.subcommandUtil.hasPermission(interaction);
-
-        if (!data[0]) return;
-
-        if (interaction.options.data[0].name === "counters") {
-            await this.subcommandUtil.runTeam(client, interaction, handler, TeamType.COUNTERS, gamemode);
-        } else if (interaction.options.data[0].name === "presets") {
-            await this.subcommandUtil.runTeam(client, interaction, handler, TeamType.PRESET, gamemode);
-        }
-        else if (interaction.options.data[0].name === "crear_equipo") {
-            if (isAdmin) {
-                await this.subcommandUtil.crearSubcommand(client, interaction, handler, gamemode)
-            } else {
-                await interaction.reply({ content: ":x: No tienes permisos para crear equipos", ephemeral: true });
-            }
-        } else if (interaction.options.data[0].name === "añadir_captura") {
-            if (isAdmin) {
-                await this.subcommandUtil.addScreenshotSubcommand(client, interaction, handler, gamemode);
-            } else {
-                await interaction.reply({ content: ":x: No tienes permisos para añadir capturas", ephemeral: true });
-            }
-        }
-        else if (interaction.options.data[0].name === "eliminar_equipo") {
-            if (isAdmin) {
-                await this.subcommandUtil.deleteTeamSubcommand(client, interaction, handler, TeamGameMode.COLOSSEUM)
-            } else {
-                await this.notAdminMessage(interaction);
-            }
-        } else if (interaction.options.data[0].name === "ver_equipo") {
-            await this.subcommandUtil.verEquipoSubcommand(client, interaction, handler, TeamGameMode.COLOSSEUM);
-        } else if (interaction.options.data[0].name === "listar") {
-            await this.subcommandUtil.listarSubcommand(client, interaction, handler, TeamGameMode.COLOSSEUM);
-        } else if(interaction.options.data[0].name === "info") {
-            const embed = new Embed()
-            .setDescription("Este bot tiene la finalidad de crear una guía ya sean de presets o counters para coliseo en **Guardian Tales**.\n\nSi algun contenido que te haya mostrado el bot no te funciona, no te preocupes, puedes reintentarlo!\n\nEspero que ganes todas sus batallas, " + interaction.user.displayName + ", nos vemos. :wave:")
-            .setFooter({ text: interaction.user.username, iconURL: !interaction.user.avatarURL()! ? "https://i.pinimg.com/originals/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg" : interaction.user.avatarURL()!})
-            .setThumbnail("https://r2.e-z.host/a992a427-74c5-45d9-8edb-61722d83e2b4/ch84t1vn.png")
-            .setColor(0xe30e4a)
-            .setTitle("Información del comando: __/coliseo__")
-            await interaction.reply({embeds: [embed], ephemeral: true})
-        } else if(interaction.options.data[0].name === "añadir_captura_id") {
-            if (isAdmin) {
-                await this.subcommandUtil.addScreenshotWithIDSubcommand(client, interaction, handler);
-            } else {
-                await this.notAdminMessage(interaction);
-            }
-        } else if(interaction.options.data[0].name === "borrar_captura") {
-            if(isAdmin) {
-                await this.subcommandUtil.borrarCapturaSubcommand(client, interaction, handler, TeamGameMode.COLOSSEUM);
-            } else {
-                await this.notAdminMessage(interaction);
-            }
-        } else if(interaction.options.data[0].name === "actualizar_ids") {
-            if(isAdmin) {
-                await this.subcommandUtil.actualizarIDs(client, interaction, handler);
-            } else {
-                await this.notAdminMessage(interaction);
-            }
-        }
+        await subcommands.runSubcommand(interaction.options.data[0].name, client, interaction);
     }
 
     public override async autocomplete(interaction: AutocompleteInteraction): Promise<void> {
@@ -208,4 +159,4 @@ class Help extends Command {
 
 
 
-export default Help;
+export default Coliseo;

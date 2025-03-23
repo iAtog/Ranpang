@@ -3,7 +3,6 @@ import { Client, CommandInteraction, AutocompleteInteraction, Interaction } from
 import { TeamGameMode, TeamsHandler, Team, TeamType, type Screenshot } from "../../lib/team/mod.ts";
 import EZ_Host from "../../lib/e-z_host/mod.ts";
 import { Database } from "../../lib/db/mod.ts";
-
 class SubcommandUtil {
 
     public async hasPermission(interaction: CommandInteraction) {

@@ -24,7 +24,8 @@ class Ranpang extends Bot {
 
         this.client.user?.setPresence({
             activities: [{ name: `Heavenhold`, type: ActivityType.Watching }]
-          });
+        });
+
     }
 
     public override async loadCommands(): Promise<void> {
@@ -34,8 +35,9 @@ class Ranpang extends Bot {
             if(!file.isFile) continue;
             const command = await import("file://" + file.path);
             if(!command.default) continue;
-            const CommandClass: Command = new command.default();
 
+            const CommandClass: Command = new command.default();
+            if(!(CommandClass instanceof Command)) continue;
             this.client.commands.set(CommandClass.settings.name, CommandClass);
             //console.log("Loaded command: " + CommandClass.settings.name);
         }
@@ -46,13 +48,18 @@ class Ranpang extends Bot {
     public override async registerCommands(): Promise<void> {
         const rest = new REST({ version: '9' }).setToken(Deno.env.get("DISCORD_TOKEN") ?? "");
         const cmds: object[] = [];
+        let commandsNames = "";
+        let count = 0;
         // deno-lint-ignore no-explicit-any
         this.client.commands.forEach((exec: any, command: any) => {
-            console.log("Registering (/) command: " + command);
+            //console.log("Registering (/) command: " + command);
+            commandsNames += (count == 0 ? "" : ", ") + command;
+            count++;
             cmds.push(exec.parse());
         });
 
         try {
+            console.log("Loaded " + count + " (/) commands: " + commandsNames);
             console.log("Refreshing (/) commands");
             await rest.put(
                 Routes.applicationCommands(Deno.env.get("BOT_ID") ?? "1294580912436281344"),
@@ -86,7 +93,7 @@ class Ranpang extends Bot {
 
         if(command.settings.restricted && interaction.user.id !== "660479309416235029") {
             interaction.reply({
-                content: "Este comando está deshabilitado.",
+                content: "Este comando está deshabilitado temporalmente.",
                 ephemeral: true
             })
             return;
