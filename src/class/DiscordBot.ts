@@ -40,7 +40,7 @@ export default abstract class DiscordBot {
         this.client.database = this.database;
         this.client.teams = new TeamsHandler(this.database);
         this.client.ez_api = new EZ_Host();
-        this.client.coliseoSubcommands = new ColiseoSubCommand(this.client);
+        this.client.coliseoSubcommands = new ColiseoSubCommand();
         
         // Meme reaction
         this.client.on("messageCreate", message => {

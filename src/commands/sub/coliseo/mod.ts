@@ -6,7 +6,7 @@ import { SubcommandUtil } from "../../../lib/subcommand/mod.ts";
 
 class ColiseoSubCommand extends SubcommandsClass {
 
-    constructor(client: Client) {
+    constructor() {
         super();
 
         this.addSubcommand("counters", this.countersSubcommand);
