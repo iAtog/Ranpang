@@ -327,7 +327,7 @@ export class PaginatedEmbed {
     }
 
     public toJSON() {
-        return this.pages.reduce((acc, page, index) => {
+        return this.pages.reduce((acc: any, page: any, index: number) => {
             acc[index + 1] = page;
             return acc;
         }, {});
@@ -398,15 +398,15 @@ export class PaginatedEmbed {
                         content: message,
                         embeds: [this.messageEmbed],
                         components: this.paginate ? [btnsRow, ...(components || [])] : [...(components || [])],
-                        ephemeral
+                        ephemeral: true
                     })) as Message;
                 } else {
-                    msg = (await interaction!.reply({
+                    msg = (await interaction.reply({
                         content: message,
                         embeds: [this.messageEmbed],
                         components: this.paginate ? [btnsRow, ...(components || [])] : [...(components || [])],
                         fetchReply: true,
-                        ephemeral
+                        ephemeral: true
                     })) as Message;
                 }
             } else {
@@ -453,9 +453,21 @@ export class PaginatedEmbed {
                 await this.changePage();
 
                 if (interaction) {
-                    await i.editReply({
-                        embeds: [this.messageEmbed]
-                    });
+                    try {
+                        await i.editReply({
+                            embeds: [this.messageEmbed]
+                        });
+                    } catch(exception: any) {
+                        if(exception.toString().includes('InteractionNotReplied')) {
+                            await i.reply({
+                                embeds: [this.messageEmbed],
+                                ephemeral: true
+                            });
+                        } else {
+                            console.log("New error occured while trying to edit the interaction reply:");
+                            console.log(exception);
+                        }
+                    }
                 } else {
                     await msg.edit({
                         embeds: [this.messageEmbed]
@@ -464,23 +476,33 @@ export class PaginatedEmbed {
             }
 
             const action = i.customId;
-            switch (action) {
-                case 'firstBtn':
-                    this.currentPage = 1;
-                    await i.update({ embeds: [this.messageEmbed] });
-                    break;
-                case 'nextBtn':
-                    this.currentPage === this.pages.length ? (this.currentPage = 1) : this.currentPage++;
-                    await i.update({ embeds: [this.messageEmbed] });
-                    break;
-                case 'prevBtn':
-                    this.currentPage === 1 ? (this.currentPage = this.pages.length) : this.currentPage--;
-                    await i.update({ embeds: [this.messageEmbed] });
-                    break;
-                case 'lastBtn':
-                    this.currentPage = this.pages.length;
-                    await i.update({ embeds: [this.messageEmbed] });
-                    break;
+            try {
+                switch (action) {
+                    case 'firstBtn':
+                        this.currentPage = 1;
+                        await i.update({ embeds: [this.messageEmbed] });
+                        break;
+                    case 'nextBtn':
+                        this.currentPage === this.pages.length ? (this.currentPage = 1) : this.currentPage++;
+                        if(this.currentPage > this.pages.length) this.currentPage = 1;
+                        //await i.editReply({ embeds: [this.messageEmbed] })
+                        await i.update({ embeds: [this.messageEmbed] });
+                        break;
+                    case 'prevBtn':
+                        this.currentPage === 1 ? (this.currentPage = this.pages.length) : this.currentPage--;
+                        if(this.currentPage < 1) this.currentPage = this.pages.length;
+                        //await i.editReply({ embeds: [this.messageEmbed] })
+                        await i.update({ embeds: [this.messageEmbed] });
+                        break;
+                    case 'lastBtn':
+                        this.currentPage = this.pages.length;
+                        await i.update({ embeds: [this.messageEmbed] });
+                        break;
+                }
+            } catch(exception: any) {
+                // ignore "InteractionAlreadyReplied" error
+                //console.log("interaction already replied:");
+                //console.log(exception);
             }
 
             await this.changePage();
